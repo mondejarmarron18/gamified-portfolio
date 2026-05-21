@@ -178,6 +178,8 @@ export function explodeRock(scene: THREE.Scene, handles: RockHandles): void {
       shard.rotation.z += 0.1
       if (t > 1.6) {
         scene.remove(shard)
+        shard.geometry.dispose()
+        ;(shard.material as THREE.Material).dispose()
         clearInterval(iv)
       }
     }, 16)

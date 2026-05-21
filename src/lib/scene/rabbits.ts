@@ -71,7 +71,7 @@ export function buildRabbits(scene: THREE.Scene): THREE.Group[] {
     r.userData['hopPhase'] = Math.random() * Math.PI * 2
     r.userData['state'] = 'wait'
     r.userData['stateTimer'] = 1 + Math.random() * 2
-    r.castShadow = true
+    r.traverse((obj) => { if (obj instanceof THREE.Mesh) obj.castShadow = true })
     scene.add(r)
     void i  // suppress unused warning
     return r
