@@ -1,0 +1,101 @@
+.gameRoot {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #060810;
+}
+
+.canvasContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.intro {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, #1c0e04, #030201);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-family: 'Crimson Text', serif;
+}
+
+.introEmoji {
+  font-size: 4.5rem;
+  filter: drop-shadow(0 0 22px #ff6b1a);
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-20px) rotate(5deg); }
+}
+
+.introTitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: #f0c060;
+  text-shadow: 0 0 40px #ff6b1a;
+  letter-spacing: .08em;
+  text-align: center;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.introSub {
+  font-size: 1rem;
+  color: #a08060;
+  margin-top: .5rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.introDivider {
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9903a, transparent);
+  margin: 1.4rem auto;
+}
+
+.introDesc {
+  color: #c4a882;
+  font-size: .95rem;
+  text-align: center;
+  max-width: 400px;
+  line-height: 1.8;
+  font-style: italic;
+  padding: 0 1rem;
+  margin: 0;
+}
+
+.introBtn {
+  margin-top: 2.5rem;
+  padding: .9rem 2.6rem;
+  background: linear-gradient(135deg, #7a3a10, #b85c18, #7a3a10);
+  border: 2px solid #c9903a;
+  border-radius: 3px;
+  color: #f0c060;
+  font-family: 'Cinzel', serif;
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 0 22px rgba(255,107,26,.45);
+  transition: all .28s;
+  animation: pulse 2s ease-in-out infinite;
+}
+.introBtn:hover {
+  background: linear-gradient(135deg, #9a4818, #d8701e, #9a4818);
+  box-shadow: 0 0 42px rgba(255,107,26,.75);
+  transform: scale(1.04);
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,107,26,.4); }
+  50%       { box-shadow: 0 0 36px rgba(255,107,26,.8); }
+}
