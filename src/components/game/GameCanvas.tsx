@@ -54,8 +54,7 @@ export function GameCanvas() {
   const camThetaVelRef = useRef(0)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
-  const { activeModal } = useModalStore()
-  const { openModal, closeModal } = useModalStore()
+  const { activeModal, openModal, closeModal } = useModalStore()
 
   useEffect(() => {
     function onResize() {

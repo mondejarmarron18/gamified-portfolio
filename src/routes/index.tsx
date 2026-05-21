@@ -10,12 +10,12 @@ export const Route = createFileRoute('/')({
         content:
           'Explore an interactive 3D island portfolio. Discover projects, experience, and resume hidden across the island.',
       },
-      { name: 'og:title', content: 'iForgeTech — Software Engineer & AI Automation' },
+      { property: 'og:title', content: 'iForgeTech — Software Engineer & AI Automation' },
       {
-        name: 'og:description',
+        property: 'og:description',
         content: 'Interactive 3D island portfolio built with Three.js and React.',
       },
-      { name: 'og:type', content: 'website' },
+      { property: 'og:type', content: 'website' },
       { name: 'twitter:card', content: 'summary_large_image' },
     ],
   }),
