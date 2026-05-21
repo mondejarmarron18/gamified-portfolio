@@ -1,0 +1,123 @@
+:root {
+  --forge: #ff6b1a;
+  --molten: #ff9a3c;
+  --ember: #ffcc44;
+  --gold: #c9903a;
+  --gold-bright: #f0c060;
+  --crack: #ff8833;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #060810;
+  font-family: 'Crimson Text', serif;
+  touch-action: none;
+}
+
+body.cw canvas {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23ff9a3c' stroke-width='2.5'/%3E%3Cline x1='16' y1='3' x2='16' y2='11' stroke='%23ff9a3c' stroke-width='2'/%3E%3Cline x1='16' y1='21' x2='16' y2='29' stroke='%23ff9a3c' stroke-width='2'/%3E%3Cline x1='3' y1='16' x2='11' y2='16' stroke='%23ff9a3c' stroke-width='2'/%3E%3Cline x1='21' y1='16' x2='29' y2='16' stroke='%23ff9a3c' stroke-width='2'/%3E%3C/svg%3E")
+    16 16,
+    move !important;
+}
+
+body.cm canvas {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Cline x1='8' y1='28' x2='28' y2='8' stroke='%23ff6b1a' stroke-width='3.5' stroke-linecap='round'/%3E%3Crect x='22' y='3' width='10' height='5' rx='2' fill='%23aaa' transform='rotate(45 27 5.5)'/%3E%3C/svg%3E")
+    8 28,
+    crosshair !important;
+}
+
+body.ci canvas {
+  cursor: pointer !important;
+}
+
+.spark {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sf 0.9s ease-out forwards;
+}
+
+@keyframes sf {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+.mflash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--fx) var(--fy),
+    rgba(255, 140, 40, 0.18) 0%,
+    transparent 50%
+  );
+  animation: fo 0.32s ease forwards;
+}
+
+@keyframes fo {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.clbl {
+  position: absolute;
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--crack);
+  text-shadow: 0 0 10px var(--forge);
+  pointer-events: none;
+  animation: cp 0.85s ease forwards;
+  white-space: nowrap;
+}
+
+@keyframes cp {
+  0%   { opacity: 0; transform: scale(0.4) translateY(0); }
+  25%  { opacity: 1; transform: scale(1.35) translateY(-5px); }
+  100% { opacity: 0; transform: scale(1) translateY(-32px); }
+}
+
+.wmr {
+  position: fixed;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 2px solid var(--molten);
+  box-shadow: 0 0 12px var(--forge);
+  transform: translate(-50%, -50%);
+  animation: wm 0.65s ease-out forwards;
+  z-index: 20;
+}
+
+@keyframes wm {
+  0%   { transform: translate(-50%, -50%) scale(0.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.7); opacity: 0; }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 999;
+}
