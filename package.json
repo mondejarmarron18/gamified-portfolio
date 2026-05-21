@@ -4,26 +4,19 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vinxi dev",
-    "build": "vinxi build",
-    "start": "vinxi start",
+    "dev": "vite dev",
+    "build": "vite build",
+    "start": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'lint not yet configured'"
   },
   "devDependencies": {
-    "@types/bun": "latest",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.1",
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8.5.15",
-    "tailwindcss": "^4.3.0",
-    "vinxi": "^0.5.11",
-    "vite": "^8.0.14",
-    "vite-tsconfig-paths": "^6.1.1"
-  },
-  "peerDependencies": {
-    "typescript": "^6.0.3"
+    "@vitejs/plugin-react": "^6.0.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.6",
