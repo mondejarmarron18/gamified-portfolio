@@ -22,7 +22,7 @@ import type { RaycastTargets } from '@/lib/raycaster'
 import styles from './GameCanvas.module.css'
 
 const IS_MOBILE =
-  typeof navigator !== 'undefined' &&
+  typeof window !== 'undefined' &&
   ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
 const SPEED = 5.5
