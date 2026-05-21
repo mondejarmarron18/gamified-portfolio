@@ -20,8 +20,8 @@ export function ProjectsModal() {
               ))}
             </div>
             <div className={styles.btnRow}>
-              <a className={styles.btn} href={p.liveUrl} target="_blank" rel="noreferrer">Live</a>
-              <a className={`${styles.btn} ${styles.btnSecondary}`} href={p.githubUrl} target="_blank" rel="noreferrer">GitHub</a>
+              {p.liveUrl && <a className={styles.btn} href={p.liveUrl} target="_blank" rel="noreferrer">Live</a>}
+              {p.githubUrl && <a className={`${styles.btn} ${styles.btnSecondary}`} href={p.githubUrl} target="_blank" rel="noreferrer">GitHub</a>}
             </div>
           </div>
         ))}

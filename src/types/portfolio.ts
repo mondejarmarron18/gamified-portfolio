@@ -4,8 +4,8 @@ export interface Project {
   type: string
   desc: string
   tags: string[]
-  liveUrl: string
-  githubUrl: string
+  liveUrl?: string
+  githubUrl?: string
 }
 
 export interface ExperienceEntry {
