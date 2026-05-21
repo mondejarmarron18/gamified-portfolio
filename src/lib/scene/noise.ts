@@ -1,7 +1,7 @@
 // src/lib/scene/noise.ts
 
 export function hash(n: number): number {
-  return (Math.sin(n) * 43758.5453) % 1
+  return Math.abs((Math.sin(n) * 43758.5453) % 1)
 }
 
 export function noise2(x: number, z: number): number {
