@@ -147,7 +147,7 @@ export function applyDayNight(
       scene.background = nightBg.clone().lerp(dayBg, ep)
       if (scene.fog instanceof THREE.FogExp2)
         scene.fog.color.copy(nightFog.clone().lerp(dayFog, ep))
-      sky.stars.material.opacity = 0.9 * (1 - ep)
+      ;(sky.stars.material as THREE.PointsMaterial).opacity = 0.9 * (1 - ep)
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - ep)
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.8
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = ep * 0.3
@@ -165,7 +165,7 @@ export function applyDayNight(
       scene.background = dayBg.clone().lerp(nightBg, ep)
       if (scene.fog instanceof THREE.FogExp2)
         scene.fog.color.copy(dayFog.clone().lerp(nightFog, ep))
-      sky.stars.material.opacity = ep * 0.9
+      ;(sky.stars.material as THREE.PointsMaterial).opacity = ep * 0.9
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.55
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = 0.8 * (1 - ep)
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = 0.3 * (1 - ep)
