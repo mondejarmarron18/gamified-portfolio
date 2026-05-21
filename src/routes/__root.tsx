@@ -4,6 +4,7 @@ import {
   Scripts,
   createRootRoute,
 } from '@tanstack/react-router'
+import '@/styles/globals.css'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,7 +37,7 @@ function RootComponent() {
       <head>
         <HeadContent />
       </head>
-      <body style={{ margin: 0, padding: 0, background: '#060810', overflow: 'hidden' }}>
+      <body>
         <Outlet />
         <Scripts />
       </body>

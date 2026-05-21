@@ -15,6 +15,9 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.184.1",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
     "vinxi": "^0.5.11",
     "vite": "^8.0.14",
     "vite-tsconfig-paths": "^6.1.1"
