@@ -1,0 +1,45 @@
+.icon  { font-size: 2rem; text-align: center; margin-bottom: .4rem; }
+.title { font-family: 'Cinzel', serif; font-size: clamp(1.1rem, 3vw, 1.55rem); font-weight: 900; color: #f0c060; text-align: center; text-shadow: 0 0 18px rgba(255,107,26,.5); letter-spacing: .05em; margin: 0; }
+.subtitle { text-align: center; font-size: .66rem; color: #ff6b1a; letter-spacing: .18em; text-transform: uppercase; margin: 3px 0 .8rem; }
+.divider { border: none; border-top: 1px solid rgba(201,144,58,.25); margin: .8rem 0; }
+.body { color: #c0a07a; font-size: .92rem; line-height: 1.8; }
+
+.expItem    { display: flex; gap: 1rem; margin-bottom: 1.2rem; align-items: flex-start; }
+.expDot     { width: 10px; height: 10px; border-radius: 50%; background: #ff6b1a; margin-top: .35rem; flex-shrink: 0; box-shadow: 0 0 8px #ff6b1a; }
+.expRole    { font-family: 'Cinzel', serif; font-size: .85rem; color: #f0c060; font-weight: 700; }
+.expCompany { font-size: .8rem; color: #ff9a3c; }
+.expDate    { font-size: .7rem; color: #8a6840; margin-top: 2px; }
+.expDesc    { font-size: .82rem; color: #b09070; margin-top: .35rem; line-height: 1.6; }
+
+.projectGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem; margin-top: .5rem; }
+.projectCard { background: rgba(40,20,6,.5); border: 1px solid rgba(90,55,28,.7); border-radius: 8px; padding: .9rem 1rem; transition: border-color .2s, box-shadow .2s; }
+.projectCard:hover { border-color: #c9903a; box-shadow: 0 0 14px rgba(255,107,26,.2); }
+.projectGem  { font-size: 1.4rem; margin-bottom: .3rem; }
+.projectName { font-family: 'Cinzel', serif; font-size: .82rem; color: #f0c060; font-weight: 700; margin-bottom: .4rem; }
+.projectDesc { font-size: .75rem; color: #a08060; line-height: 1.55; margin-bottom: .5rem; }
+
+.resSection { margin-bottom: 1.1rem; }
+.resHead    { font-family: 'Cinzel', serif; font-size: .78rem; color: #ff6b1a; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
+.resHead::after { content: ''; flex: 1; height: 1px; background: rgba(201,144,58,.25); }
+.resRow     { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .3rem; }
+.resLabel   { font-size: .82rem; color: #f0c060; }
+.resVal     { font-size: .78rem; color: #9a7850; }
+
+.tagRow  { display: flex; flex-wrap: wrap; gap: 4px; margin-top: .3rem; }
+.tag     { background: rgba(100,50,10,.3); border: 1px solid rgba(80,45,15,.7); border-radius: 3px; padding: 1px 7px; font-size: .6rem; color: #ff9a3c; }
+.btnRow  { display: flex; gap: 8px; flex-wrap: wrap; margin-top: .8rem; justify-content: center; }
+.btn     { padding: .55rem 1.3rem; border-radius: 4px; font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700; cursor: pointer; letter-spacing: .1em; transition: all .2s; text-decoration: none; display: inline-block; border: 1px solid #c9903a; background: linear-gradient(135deg,#7a3a10,#b85c18); color: #f0c060; box-shadow: 0 0 14px rgba(255,107,26,.25); }
+.btn:hover { box-shadow: 0 0 26px rgba(255,107,26,.55); transform: translateY(-1px); }
+.btnSecondary { background: transparent; border-color: rgba(90,55,28,.8); color: #9a7850; }
+.btnSecondary:hover { border-color: #c9903a; color: #f0c060; }
+
+.contactForm  { display: flex; flex-direction: column; gap: .9rem; }
+.formGrid     { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.formLabel    { font-size: .65rem; color: #9a7850; text-transform: uppercase; letter-spacing: .1em; display: flex; flex-direction: column; gap: .35rem; }
+.input        { background: #1a0e04; border: 1px solid rgba(201,144,58,.4); border-radius: 5px; padding: .5rem .7rem; color: #f0c060; font-family: 'Crimson Text', serif; font-size: .9rem; outline: none; width: 100%; box-sizing: border-box; }
+.textarea     { background: #1a0e04; border: 1px solid rgba(201,144,58,.4); border-radius: 5px; padding: .5rem .7rem; color: #f0c060; font-family: 'Crimson Text', serif; font-size: .9rem; outline: none; resize: vertical; width: 100%; box-sizing: border-box; }
+.successMsg   { color: #66cc66; text-align: center; font-size: .9rem; }
+.errorMsg     { color: #cc4444; font-size: .8rem; text-align: center; }
+.directContact { text-align: center; font-size: .72rem; color: #6a5030; margin-top: .2rem; }
+.emailLink    { color: #ff9a3c; text-decoration: none; }
+.emailLink:hover { text-decoration: underline; }
