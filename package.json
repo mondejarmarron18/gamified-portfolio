@@ -1,6 +1,5 @@
 {
   "name": "gamified-portfolio",
-  "module": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
