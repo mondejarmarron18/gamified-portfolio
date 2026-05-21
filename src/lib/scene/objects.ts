@@ -9,6 +9,66 @@ export interface ObjectHandles {
   chestLid: THREE.Group
   chestGlow: THREE.PointLight
   scrollGroup: THREE.Group
+  campfireLight: THREE.PointLight
+}
+
+export function buildCampfire(scene: THREE.Scene): THREE.PointLight {
+  const g = new THREE.Group()
+
+  const logMat = new THREE.MeshStandardMaterial({ color: 0x4a2a0a, roughness: 0.97 })
+  const emberMat = new THREE.MeshStandardMaterial({ color: 0xff4400, roughness: 1, emissive: new THREE.Color(0xff2200), emissiveIntensity: 1.2 })
+
+  // Log pile — two crossed cylinders
+  ;[-1, 1].forEach((s) => {
+    const log = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 1.1, 7), logMat)
+    log.rotation.z = s * 0.55
+    log.rotation.y = s * 0.4
+    log.position.y = 0.12
+    log.castShadow = true
+    g.add(log)
+  })
+
+  // Ember bed
+  const embers = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.1, 8), emberMat)
+  embers.position.y = 0.05
+  g.add(embers)
+
+  // Flame layers — three stacked cones, slightly offset for organic look
+  const flameDefs: [number, number, number, number][] = [
+    [0.22, 0.55, 7, 0xff6600],
+    [0.15, 0.70, 6, 0xff3300],
+    [0.08, 0.45, 5, 0xffcc00],
+  ]
+  flameDefs.forEach(([r, h, seg, color], i) => {
+    const flame = new THREE.Mesh(
+      new THREE.ConeGeometry(r, h, seg),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85 }),
+    )
+    flame.position.set((i % 2 === 0 ? 0.04 : -0.04) * i, h / 2 + 0.12, (i === 1 ? 0.03 : 0))
+    flame.name = `flame_${i}`
+    g.add(flame)
+  })
+
+  // Warm ground glow disc
+  const glow = new THREE.Mesh(
+    new THREE.CircleGeometry(1.2, 16),
+    new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.18 }),
+  )
+  glow.rotation.x = -Math.PI / 2
+  glow.position.y = 0.02
+  g.add(glow)
+
+  g.position.set(0, 0, 0)
+  scene.add(g)
+
+  // Point light for the campfire glow
+  const light = new THREE.PointLight(0xff7722, 4.5, 22)
+  light.position.set(0, 1.2, 0)
+  light.castShadow = false
+  light.name = 'campfireLight'
+  scene.add(light)
+
+  return light
 }
 
 export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: Vec2): THREE.Group {

@@ -326,6 +326,10 @@ export function GameCanvas() {
       const forgeLight = refs.scene.getObjectByName('forgeLight') as THREE.PointLight | undefined
       if (forgeLight) forgeLight.intensity = 3.5 + Math.sin(elapsed * 6.8) * 0.4 + Math.sin(elapsed * 11.3) * 0.18
 
+      // Campfire flicker — two sine waves at different frequencies for organic feel
+      const campfireLight = refs.scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
+      if (campfireLight) campfireLight.intensity = 4.5 + Math.sin(elapsed * 7.3) * 0.6 + Math.sin(elapsed * 13.7) * 0.3
+
       if (!gs.walking) refs.player.group.rotation.z = Math.sin(elapsed * 1.2) * 0.014
 
       updateSkyDrift(refs.sky, elapsed)

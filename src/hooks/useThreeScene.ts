@@ -13,7 +13,7 @@ import {
 } from '@/lib/scene/island'
 import { buildPlayer } from '@/lib/scene/player'
 import { buildRocks } from '@/lib/scene/rocks'
-import { buildSignBoard, buildChest, buildScroll } from '@/lib/scene/objects'
+import { buildSignBoard, buildChest, buildScroll, buildCampfire } from '@/lib/scene/objects'
 import { buildRabbits } from '@/lib/scene/rabbits'
 import { getState } from '@/lib/state'
 import type { LightHandles } from '@/lib/scene/lighting'
@@ -97,9 +97,10 @@ export function useThreeScene(
     const signGroup = buildSignBoard(scene, tex, gs.signPos)
     const { chestGroup, chestLid, chestGlow } = buildChest(scene, gs.chestPos)
     const scrollGroup = buildScroll(scene, gs.scrollPos)
+    const campfireLight = buildCampfire(scene)
     const rabbitGroups = buildRabbits(scene)
 
-    const objects: ObjectHandles = { signGroup, chestGroup, chestLid, chestGlow, scrollGroup }
+    const objects: ObjectHandles = { signGroup, chestGroup, chestLid, chestGlow, scrollGroup, campfireLight }
 
     applyDayNight(scene, sky, lights, true)
 

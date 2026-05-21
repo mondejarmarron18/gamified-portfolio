@@ -9,7 +9,7 @@ export interface LightHandles {
 }
 
 export function buildLighting(scene: THREE.Scene): LightHandles {
-  const moon = new THREE.DirectionalLight(0x8899cc, 0.85)
+  const moon = new THREE.DirectionalLight(0x9aaedd, 1.4)
   moon.name = 'moonLight'
   moon.position.set(-15, 30, 10)
   moon.castShadow = true

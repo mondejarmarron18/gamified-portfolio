@@ -156,7 +156,7 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = ep * 0.88,
         ),
       )
-      lights.moon.intensity = 0.85 * (1 - ep)
+      lights.moon.intensity = 1.4 * (1 - ep)
       lights.sun.intensity = ep * 2.2
       lights.hemi.color.set(0x223366).lerp(new THREE.Color(0x88bbff), ep)
       lights.hemi.groundColor.set(0x1a1006).lerp(new THREE.Color(0x6a8040), ep)
@@ -174,7 +174,7 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = 0.88 * (1 - ep),
         ),
       )
-      lights.moon.intensity = ep * 0.85
+      lights.moon.intensity = ep * 1.4
       lights.sun.intensity = 0.85 * (1 - ep) * 0.3
       lights.hemi.color.set(0x88bbff).lerp(new THREE.Color(0x223366), ep)
       lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1a1006), ep)
