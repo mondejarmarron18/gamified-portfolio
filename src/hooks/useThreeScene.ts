@@ -15,6 +15,7 @@ import { buildPlayer } from '@/lib/scene/player'
 import { buildRocks } from '@/lib/scene/rocks'
 import { buildSignBoard, buildChest, buildScroll, buildCampfire } from '@/lib/scene/objects'
 import { buildRabbits } from '@/lib/scene/rabbits'
+import { buildButterflies } from '@/lib/scene/butterflies'
 import { getState } from '@/lib/state'
 import type { LightHandles } from '@/lib/scene/lighting'
 import type { SkyHandles } from '@/lib/scene/sky'
@@ -35,6 +36,7 @@ export interface SceneRefs {
   rabbitGroups: THREE.Group[]
   groundMesh: THREE.Mesh
   isDay: boolean
+  butterflies: THREE.Group[]
 }
 
 const IS_MOBILE =
@@ -99,6 +101,7 @@ export function useThreeScene(
     const scrollGroup = buildScroll(scene, gs.scrollPos)
     const campfireLight = buildCampfire(scene)
     const rabbitGroups = buildRabbits(scene)
+    const butterflies = buildButterflies(scene)
 
     const objects: ObjectHandles = { signGroup, chestGroup, chestLid, chestGlow, scrollGroup, campfireLight }
 
@@ -108,7 +111,7 @@ export function useThreeScene(
       scene, camera, renderer, clock,
       lights, sky, player,
       rockHandles, objects, rabbitGroups,
-      groundMesh, isDay: true,
+      groundMesh, isDay: true, butterflies,
     }
 
     return () => {

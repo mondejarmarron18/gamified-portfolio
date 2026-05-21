@@ -133,6 +133,8 @@ export function applyDayNight(
 ): void {
   const dur = 2500
   const start = Date.now()
+  const campfireGroup = scene.getObjectByName('campfireGroup')
+  const campfirePointLight = scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
 
   const dayBg = new THREE.Color(0x87ceeb)
   const nightBg = new THREE.Color(0x060810)
@@ -179,6 +181,17 @@ export function applyDayNight(
       lights.hemi.color.set(0x88bbff).lerp(new THREE.Color(0x223366), ep)
       lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1a1006), ep)
       lights.hemi.intensity = 1.25 - ep * 0.5
+    }
+
+    // Campfire: only relevant when switching modes
+    if (!isDay) {
+      // Fading to night — show and fade in
+      if (campfireGroup) campfireGroup.visible = true
+      if (campfirePointLight) campfirePointLight.intensity = 4.5 * ep
+    } else if (campfireGroup?.visible) {
+      // Fading to day and campfire was on — fade out then hide
+      if (campfirePointLight) campfirePointLight.intensity = 4.5 * (1 - ep)
+      if (p >= 1) campfireGroup.visible = false
     }
 
     if (p >= 1) {

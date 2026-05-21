@@ -59,10 +59,12 @@ export function buildCampfire(scene: THREE.Scene): THREE.PointLight {
   g.add(glow)
 
   g.position.set(0, 0, 0)
+  g.name = 'campfireGroup'
+  g.visible = false  // hidden during day; applyDayNight reveals it at night
   scene.add(g)
 
   // Point light for the campfire glow
-  const light = new THREE.PointLight(0xff7722, 4.5, 22)
+  const light = new THREE.PointLight(0xff7722, 0, 22)  // intensity 0 until night
   light.position.set(0, 1.2, 0)
   light.castShadow = false
   light.name = 'campfireLight'

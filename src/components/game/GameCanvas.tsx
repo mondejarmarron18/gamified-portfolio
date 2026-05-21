@@ -12,6 +12,7 @@ import { applyDayNight, updateSkyDrift } from '@/lib/scene/sky'
 import { animatePlayerWalk, resetPlayerPose } from '@/lib/scene/player'
 import { shakeMesh, explodeRock } from '@/lib/scene/rocks'
 import { spawnSparks, showCrackLabel, showWalkMarker } from '@/lib/effects'
+import { updateButterflies } from '@/lib/scene/butterflies'
 import { Hud } from './Hud'
 import { Modal } from './Modal'
 import { ExperienceModal } from './modals/ExperienceModal'
@@ -52,6 +53,7 @@ export function GameCanvas() {
   const onArriveRef = useRef<(() => void) | null>(null)
   const camThetaRef = useRef(0)
   const camThetaVelRef = useRef(0)
+  const campfireActiveRef = useRef(false)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
@@ -326,9 +328,12 @@ export function GameCanvas() {
       const forgeLight = refs.scene.getObjectByName('forgeLight') as THREE.PointLight | undefined
       if (forgeLight) forgeLight.intensity = 3.5 + Math.sin(elapsed * 6.8) * 0.4 + Math.sin(elapsed * 11.3) * 0.18
 
-      // Campfire flicker — two sine waves at different frequencies for organic feel
+      // Campfire flicker — only when night is fully active (not during transition)
       const campfireLight = refs.scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
-      if (campfireLight) campfireLight.intensity = 4.5 + Math.sin(elapsed * 7.3) * 0.6 + Math.sin(elapsed * 13.7) * 0.3
+      if (campfireLight && campfireActiveRef.current)
+        campfireLight.intensity = 4.5 + Math.sin(elapsed * 7.3) * 0.6 + Math.sin(elapsed * 13.7) * 0.3
+
+      updateButterflies(refs.butterflies, dt, elapsed)
 
       if (!gs.walking) refs.player.group.rotation.z = Math.sin(elapsed * 1.2) * 0.014
 
@@ -361,7 +366,10 @@ export function GameCanvas() {
     if (!refs) return
     const newIsDay = !isDay
     setIsDay(newIsDay)
-    applyDayNight(refs.scene, refs.sky, refs.lights, newIsDay)
+    if (newIsDay) campfireActiveRef.current = false  // stop flicker immediately when going to day
+    applyDayNight(refs.scene, refs.sky, refs.lights, newIsDay, () => {
+      if (!newIsDay) campfireActiveRef.current = true  // start flicker after night transition completes
+    })
   }
 
   if (!gameStarted) {
