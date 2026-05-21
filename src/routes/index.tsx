@@ -6,9 +6,9 @@ export const Route = createFileRoute('/')({
 
 function IndexPage() {
   return (
-    <div className="p-8 text-gold font-cinzel">
-      <h1 className="text-4xl font-bold mb-4">iForgeTech — bootstrap OK</h1>
-      <p className="text-lg">Game canvas will be wired up in Phase 5.</p>
+    <div style={{ color: '#f0c060', fontFamily: 'Cinzel, serif', padding: '2rem' }}>
+      <h1>iForgeTech — bootstrap OK</h1>
+      <p>Game canvas will be wired up in Phase 5.</p>
     </div>
   )
 }
