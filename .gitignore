@@ -2,6 +2,8 @@ node_modules/
 dist/
 .output/
 .vinxi/
+.vite/
+app.config.timestamp_*.js
 .env
 .env.*
 !.env.example
