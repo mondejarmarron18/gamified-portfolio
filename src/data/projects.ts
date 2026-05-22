@@ -2,6 +2,22 @@ import type { Project } from '@/types/portfolio'
 
 export const projects: Project[] = [
   {
+    gem: '🌐',
+    name: 'Interactive 3D Portfolio Platform',
+    type: 'Full-Stack · 3D · SSR',
+    desc: 'Game-like 3D portfolio built with Bun, TanStack Start, React, TypeScript, and Three.js — featuring modular scene architecture, SSR, SEO optimization, and immersive UI/UX.',
+    tags: ['Bun', 'TanStack Start', 'React', 'TypeScript', 'Three.js'],
+    liveUrl: 'https://portfolio.iforgetech.com',
+    githubUrl: 'https://github.com/mondejarmarron18/gamified-portfolio',
+  },
+  {
+    gem: '📅',
+    name: 'Eventra',
+    type: 'Full-Stack · SaaS',
+    desc: 'Event & resource management platform with role-based access control, event registration, payment processing, resource management, audit logging, and public APIs — built on a scalable monorepo.',
+    tags: ['Bun', 'Hono', 'React', 'TypeScript', 'PostgreSQL', 'Docker'],
+  },
+  {
     gem: '🎬',
     name: 'YT Transcribe',
     type: 'AI Tool · Full-Stack',
