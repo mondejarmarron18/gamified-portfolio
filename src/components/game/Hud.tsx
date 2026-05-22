@@ -15,11 +15,19 @@ interface Props {
   hintLabels: HintLabel[]
   isMobile: boolean
   fps: number
+  qualityMode: 'auto' | 'high' | 'low'
+  effectiveQuality: 'high' | 'low'
+  onCycleQuality: () => void
 }
 
-export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps }: Props) {
+export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality }: Props) {
   const stamina = useGameStore((s) => s.stamina)
   const discovered = useGameStore((s) => s.discovered)
+
+  const qualityLabel =
+    qualityMode === 'high' ? '✨ Quality' :
+    qualityMode === 'low'  ? '🔋 Performance' :
+    '⚙ Auto'
 
   return (
     <div className={styles.hud}>
@@ -43,9 +51,19 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps }: Prop
         <div className={styles.discCount}>{discovered} / 3</div>
       </div>
 
-      <button className={styles.dayNightBtn} onClick={onToggleDayNight}>
-        {isDay ? '🌙 Evening' : '🌅 Morning'}
-      </button>
+      <div className={styles.centerBtns}>
+        <button className={styles.dayNightBtn} onClick={onToggleDayNight}>
+          {isDay ? '🌙 Evening' : '🌅 Morning'}
+        </button>
+        <button className={styles.qualityBtn} onClick={onCycleQuality}>
+          {qualityLabel}
+          {qualityMode === 'auto' && (
+            <span className={styles.qualityAuto}>
+              {effectiveQuality === 'high' ? '▲ high' : '▼ low'}
+            </span>
+          )}
+        </button>
+      </div>
 
       {!isMobile ? (
         <div className={styles.controls}>
