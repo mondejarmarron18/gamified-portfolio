@@ -16,7 +16,8 @@ import { buildRocks } from '@/lib/scene/rocks'
 import { buildSignBoard, buildChest, buildScroll, buildCampfire } from '@/lib/scene/objects'
 import { buildRabbits } from '@/lib/scene/rabbits'
 import { buildButterflies } from '@/lib/scene/butterflies'
-import { getState } from '@/lib/state'
+import { applyQuality } from '@/lib/scene/quality'
+import { getState, useGameStore } from '@/lib/state'
 import type { LightHandles } from '@/lib/scene/lighting'
 import type { SkyHandles } from '@/lib/scene/sky'
 import type { PlayerHandles } from '@/lib/scene/player'
@@ -37,6 +38,9 @@ export interface SceneRefs {
   groundMesh: THREE.Mesh
   isDay: boolean
   butterflies: THREE.Group[]
+  grassMeshes: THREE.Mesh[]
+  treeGroups: THREE.Group[]
+  flowerGroups: THREE.Group[]
 }
 
 const IS_MOBILE =
@@ -88,9 +92,9 @@ export function useThreeScene(
     const sky = buildSky(scene)
 
     buildIsland(scene, tex)
-    buildGrass(scene)
-    buildTrees(scene, tex)
-    buildFlowers(scene)
+    const grassMeshes = buildGrass(scene)
+    const treeGroups = buildTrees(scene, tex)
+    const flowerGroups = buildFlowers(scene)
     buildDecorRocks(scene, tex)
     const groundMesh = buildGround(scene)
 
@@ -112,6 +116,17 @@ export function useThreeScene(
       lights, sky, player,
       rockHandles, objects, rabbitGroups,
       groundMesh, isDay: true, butterflies,
+      grassMeshes, treeGroups, flowerGroups,
+    }
+
+    const savedMode = (typeof window !== 'undefined'
+      ? localStorage.getItem('iforgetech-quality-mode')
+      : null) as 'auto' | 'high' | 'low' | null
+
+    if (savedMode && savedMode !== 'auto') {
+      useGameStore.getState().setQualityMode(savedMode)
+      useGameStore.getState().setEffectiveQuality(savedMode === 'low' ? 'low' : 'high')
+      applyQuality({ renderer, scene, grassMeshes, treeGroups, flowerGroups, butterflies }, savedMode === 'low' ? 'low' : 'high')
     }
 
     return () => {
