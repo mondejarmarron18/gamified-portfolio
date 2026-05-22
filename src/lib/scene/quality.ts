@@ -12,6 +12,7 @@ export interface QualityRefs {
   treeGroups: THREE.Group[]
   flowerGroups: THREE.Group[]
   butterflies: THREE.Group[]
+  rabbitGroups: THREE.Group[]
 }
 
 export function applyQuality(refs: QualityRefs, q: 'high' | 'low'): void {
@@ -20,8 +21,14 @@ export function applyQuality(refs: QualityRefs, q: 'high' | 'low'): void {
   refs.grassMeshes.forEach((m) => { m.visible = !isLow })
   refs.flowerGroups.forEach((g) => { g.visible = !isLow })
   refs.butterflies.forEach((g) => { g.visible = !isLow })
-  // Hide every other tree in low mode (even indices), keep odd ones for silhouette
-  refs.treeGroups.forEach((g, i) => { g.visible = !isLow || i % 2 !== 0 })
+  refs.rabbitGroups.forEach((g) => { g.visible = !isLow })
+  // Hide every other tree in low mode; disable shadow casting on all trees for performance
+  refs.treeGroups.forEach((g, i) => {
+    g.visible = !isLow || i % 2 !== 0
+    g.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) (child as THREE.Mesh).castShadow = !isLow
+    })
+  })
 
   refs.renderer.shadowMap.enabled = !isLow
   refs.renderer.shadowMap.needsUpdate = true

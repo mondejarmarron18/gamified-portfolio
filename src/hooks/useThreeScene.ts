@@ -127,7 +127,7 @@ export function useThreeScene(
     if (savedMode === 'low') {
       useGameStore.getState().setQualityMode('low')
       useGameStore.getState().setEffectiveQuality('low')
-      applyQuality({ renderer, scene, grassMeshes, treeGroups, flowerGroups, butterflies }, 'low')
+      applyQuality({ renderer, scene, grassMeshes, treeGroups, flowerGroups, butterflies, rabbitGroups }, 'low')
     } else if (savedMode === 'high') {
       useGameStore.getState().setQualityMode('high')
     }

@@ -132,7 +132,7 @@ export function buildRocks(
 
     // ── Lights ──────────────────────────────────────────────────────────────
     const glowColor = isGold ? 0xffcc00 : 0xff8833
-    const glowLight = new THREE.PointLight(glowColor, 0.6, 6)
+    const glowLight = new THREE.PointLight(glowColor, 0, 6)
     glowLight.position.y = 1.0
     g.add(glowLight)
 

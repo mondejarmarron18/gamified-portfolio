@@ -245,6 +245,7 @@ export function GameCanvas() {
     if (newHits >= rock.maxHits) {
       store.crackRock(index)
       store.incrementDiscovered()
+      handle.glowLight.intensity = 0
       setTimeout(() => explodeRock(refs.scene, handle), 300)
       if (handle.isGold) setTimeout(() => openModal('resume'), 800)
     }
@@ -328,10 +329,6 @@ export function GameCanvas() {
           }
         } else {
           h.group.position.y = Math.sin(elapsed * 1.3 + h.bobOffset) * 0.05
-          const d = Math.hypot(gs.player.x - r.pos.x, gs.player.z - r.pos.z)
-          h.glowLight.intensity = d < 5
-            ? Math.min(2.5, h.glowLight.intensity + 0.06)
-            : Math.max(0, h.glowLight.intensity - 0.03)
         }
       })
 
@@ -354,7 +351,7 @@ export function GameCanvas() {
         if (rollingFpsRef.current.length > 180) rollingFpsRef.current.shift()
         const avg = rollingFpsRef.current.reduce((a, b) => a + b, 0) / rollingFpsRef.current.length
 
-        const qualityRefs = { renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }
+        const qualityRefs = { renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies, rabbitGroups: refs.rabbitGroups }
         if (effectiveQuality === 'high' && avg < 30) {
           autoDowngradeTimerRef.current += dt
           if (autoDowngradeTimerRef.current >= 3) {
@@ -439,10 +436,10 @@ export function GameCanvas() {
     rollingFpsRef.current = []
     if (next === 'high') {
       store.setEffectiveQuality('high')
-      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'high')
+      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies, rabbitGroups: refs.rabbitGroups }, 'high')
     } else if (next === 'low') {
       store.setEffectiveQuality('low')
-      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'low')
+      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies, rabbitGroups: refs.rabbitGroups }, 'low')
     }
     // 'auto': keep current effectiveQuality, auto-detection takes over from here
   }, [sceneRefsRef])
