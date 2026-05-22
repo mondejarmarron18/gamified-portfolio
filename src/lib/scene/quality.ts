@@ -26,7 +26,8 @@ export function applyQuality(refs: QualityRefs, q: 'high' | 'low'): void {
   refs.renderer.shadowMap.enabled = !isLow
   refs.renderer.shadowMap.needsUpdate = true
 
-  const targetPixelRatio = isLow ? 1 : Math.min(window.devicePixelRatio, IS_MOBILE ? 1.5 : 2)
+  const dpr = typeof window !== 'undefined' ? window.devicePixelRatio : 1
+  const targetPixelRatio = isLow ? 1 : Math.min(dpr, IS_MOBILE ? 1.5 : 2)
   refs.renderer.setPixelRatio(targetPixelRatio)
 
   const fog = refs.scene.fog as THREE.FogExp2 | null

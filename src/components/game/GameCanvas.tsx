@@ -354,29 +354,27 @@ export function GameCanvas() {
         if (rollingFpsRef.current.length > 180) rollingFpsRef.current.shift()
         const avg = rollingFpsRef.current.reduce((a, b) => a + b, 0) / rollingFpsRef.current.length
 
+        const qualityRefs = { renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }
         if (effectiveQuality === 'high' && avg < 30) {
           autoDowngradeTimerRef.current += dt
           if (autoDowngradeTimerRef.current >= 3) {
             store.setEffectiveQuality('low')
-            applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'low')
+            applyQuality(qualityRefs, 'low')
             autoLockoutEndRef.current = elapsed + 10
             autoDowngradeTimerRef.current = 0
             rollingFpsRef.current = []
           }
-        } else {
-          autoDowngradeTimerRef.current = 0
-        }
-
-        if (effectiveQuality === 'low' && avg > 55) {
+        } else if (effectiveQuality === 'low' && avg > 55) {
           autoUpgradeTimerRef.current += dt
           if (autoUpgradeTimerRef.current >= 5) {
             store.setEffectiveQuality('high')
-            applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'high')
+            applyQuality(qualityRefs, 'high')
             autoLockoutEndRef.current = elapsed + 10
             autoUpgradeTimerRef.current = 0
             rollingFpsRef.current = []
           }
         } else {
+          autoDowngradeTimerRef.current = 0
           autoUpgradeTimerRef.current = 0
         }
       }
@@ -432,6 +430,11 @@ export function GameCanvas() {
       qualityMode === 'auto' ? 'high' : qualityMode === 'high' ? 'low' : 'auto'
     store.setQualityMode(next)
     if (typeof window !== 'undefined') localStorage.setItem('iforgetech-quality-mode', next)
+    // Reset auto-detection state whenever mode changes so stale timers don't fire on re-entry
+    autoDowngradeTimerRef.current = 0
+    autoUpgradeTimerRef.current = 0
+    autoLockoutEndRef.current = 0
+    rollingFpsRef.current = []
     if (next === 'high') {
       store.setEffectiveQuality('high')
       if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'high')
