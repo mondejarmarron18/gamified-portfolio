@@ -140,16 +140,6 @@ export function buildRocks(
     gemLight.position.y = 2.5
     g.add(gemLight)
 
-    // Moss cap on non-gold rocks (sits at base of volcano)
-    if (!isGold) {
-      const moss = new THREE.Mesh(
-        new THREE.CylinderGeometry(1.05, 1.18, 0.12, 10),
-        new THREE.MeshStandardMaterial({ color: 0x2a4a10, roughness: 0.99 }),
-      )
-      moss.position.y = 0.06
-      g.add(moss)
-    }
-
     g.position.set(rock.pos.x, 0, rock.pos.z)
     g.userData['rockMesh'] = rockMesh
     g.userData['rockIndex'] = i

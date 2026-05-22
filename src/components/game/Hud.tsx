@@ -18,9 +18,11 @@ interface Props {
   qualityMode: 'auto' | 'high' | 'low'
   effectiveQuality: 'high' | 'low'
   onCycleQuality: () => void
+  audioEnabled: boolean
+  onToggleAudio: () => void
 }
 
-export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality }: Props) {
+export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality, audioEnabled, onToggleAudio }: Props) {
   const stamina = useGameStore((s) => s.stamina)
   const discovered = useGameStore((s) => s.discovered)
 
@@ -62,6 +64,9 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
               {effectiveQuality === 'high' ? '▲ high' : '▼ low'}
             </span>
           )}
+        </button>
+        <button className={styles.audioBtn} onClick={onToggleAudio} title={audioEnabled ? 'Mute audio' : 'Unmute audio'}>
+          {audioEnabled ? '🔊' : '🔇'}
         </button>
       </div>
 

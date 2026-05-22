@@ -14,6 +14,15 @@ import { shakeMesh, explodeRock } from '@/lib/scene/rocks'
 import { spawnSparks, showCrackLabel, showWalkMarker } from '@/lib/effects'
 import { updateButterflies } from '@/lib/scene/butterflies'
 import { applyQuality } from '@/lib/scene/quality'
+import {
+  setAudioEnabled,
+  startWalkSound,
+  stopWalkSound,
+  playMineHit,
+  playRockExplode,
+  playModalOpen,
+  cleanupAudio,
+} from '@/lib/audio'
 import { Hud } from './Hud'
 import { Modal } from './Modal'
 import { ExperienceModal } from './modals/ExperienceModal'
@@ -62,9 +71,14 @@ export function GameCanvas() {
   const autoUpgradeTimerRef = useRef(0)
   const autoLockoutEndRef = useRef(0)
   const rollingFpsRef = useRef<number[]>([])
+  const wasWalkingRef = useRef(false)
+  const [audioEnabled, setAudioEnabledState] = useState(true)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
+
+  // Clean up AudioContext when component unmounts
+  useEffect(() => () => cleanupAudio(), [])
 
   useEffect(() => {
     function onResize() {
@@ -115,11 +129,11 @@ export function GameCanvas() {
     const { setTarget, setWalking } = useGameStore.getState()
 
     if (hit.type === 'ground') return
-    if (hit.type === 'crackedGold') { openModal('resume'); return }
+    if (hit.type === 'crackedGold') { playModalOpen(); openModal('resume'); return }
     if (hit.type === 'sign') {
       const dist = Math.hypot(gs.player.x - gs.signPos.x, gs.player.z - gs.signPos.z)
-      if (dist <= 5) openModal('experience')
-      else { setTarget({ x: gs.signPos.x, z: gs.signPos.z + 2 }); setWalking(true); onArriveRef.current = () => openModal('experience') }
+      if (dist <= 5) { playModalOpen(); openModal('experience') }
+      else { setTarget({ x: gs.signPos.x, z: gs.signPos.z + 2 }); setWalking(true); onArriveRef.current = () => { playModalOpen(); openModal('experience') } }
       return
     }
     if (hit.type === 'chest') {
@@ -130,8 +144,8 @@ export function GameCanvas() {
     }
     if (hit.type === 'scroll') {
       const dist = Math.hypot(gs.player.x - gs.scrollPos.x, gs.player.z - gs.scrollPos.z)
-      if (dist <= 5) openModal('contact')
-      else { setTarget({ x: gs.scrollPos.x, z: gs.scrollPos.z + 2 }); setWalking(true); onArriveRef.current = () => openModal('contact') }
+      if (dist <= 5) { playModalOpen(); openModal('contact') }
+      else { setTarget({ x: gs.scrollPos.x, z: gs.scrollPos.z + 2 }); setWalking(true); onArriveRef.current = () => { playModalOpen(); openModal('contact') } }
       return
     }
     if (hit.type === 'rock') {
@@ -211,6 +225,7 @@ export function GameCanvas() {
       }, 16)
       refs.objects.chestGlow.intensity = 2.5
     }
+    playModalOpen()
     openModal('projects')
   }
 
@@ -238,6 +253,7 @@ export function GameCanvas() {
     handle.glowLight.intensity = newHits * 1.5
     shakeMesh(handle.group)
     spawnSparks(handle.group.position, refs.camera, refs.renderer, handle.isGold)
+    playMineHit()
     const canvasContainer = canvasContainerRef.current
     if (canvasContainer)
       showCrackLabel(canvasContainer, ['CRACK!', 'BREAKING!', '💥 SHATTERED!'][Math.min(newHits - 1, 2)]!)
@@ -246,8 +262,8 @@ export function GameCanvas() {
       store.crackRock(index)
       store.incrementDiscovered()
       handle.glowLight.intensity = 0
-      setTimeout(() => explodeRock(refs.scene, handle), 300)
-      if (handle.isGold) setTimeout(() => openModal('resume'), 800)
+      setTimeout(() => { playRockExplode(); explodeRock(refs.scene, handle) }, 300)
+      if (handle.isGold) setTimeout(() => { playModalOpen(); openModal('resume') }, 800)
     }
 
     if (!gs.rechargingStamina) {
@@ -266,6 +282,11 @@ export function GameCanvas() {
       if (!refs) return
       const gs = getState()
       const store = useGameStore.getState()
+
+      // Walk sound — start/stop on transition
+      if (gs.walking && !wasWalkingRef.current) startWalkSound()
+      else if (!gs.walking && wasWalkingRef.current) stopWalkSound()
+      wasWalkingRef.current = gs.walking
 
       if (gs.target) {
         const dx = gs.target.x - gs.player.x
@@ -419,6 +440,12 @@ export function GameCanvas() {
     })
   }
 
+  const handleToggleAudio = useCallback(() => {
+    const next = !audioEnabled
+    setAudioEnabledState(next)
+    setAudioEnabled(next)
+  }, [audioEnabled])
+
   const handleCycleQuality = useCallback(() => {
     const { qualityMode } = getState()
     const refs = sceneRefsRef.current
@@ -455,7 +482,7 @@ export function GameCanvas() {
           We forge intelligent systems — from full-stack apps to AI-driven automation.<br />
           Explore the island. Uncover the work. Discover what's possible.
         </p>
-        <button className={styles.introBtn} onClick={() => setGameStarted(true)}>
+        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setAudioEnabled(true) }}>
           ⚒ Explore My Work
         </button>
       </div>
@@ -478,6 +505,8 @@ export function GameCanvas() {
         qualityMode={qualityMode}
         effectiveQuality={effectiveQuality}
         onCycleQuality={handleCycleQuality}
+        audioEnabled={audioEnabled}
+        onToggleAudio={handleToggleAudio}
       />
       <Modal>
         {ModalContent && <ModalContent />}
