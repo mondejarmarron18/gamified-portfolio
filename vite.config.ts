@@ -11,9 +11,7 @@ export default defineConfig({
   },
   plugins: [
     tanstackStart({
-      server: {
-        preset: 'vercel',
-      },
+      spa: { enabled: true },
     }),
     viteReact(),
   ],
