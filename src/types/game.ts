@@ -32,6 +32,8 @@ export interface GameState {
   chestPos: Vec2
   scrollPos: Vec2
   chestOpen: boolean
+  qualityMode: 'auto' | 'high' | 'low'
+  effectiveQuality: 'high' | 'low'
 }
 
 // Discriminated union returned by castRay()

@@ -17,6 +17,8 @@ interface GameActions {
   setIntroZoom: (v: boolean) => void
   setIntroZoomDist: (dist: number) => void
   openChest: () => void
+  setQualityMode: (mode: 'auto' | 'high' | 'low') => void
+  setEffectiveQuality: (q: 'high' | 'low') => void
 }
 
 const initialState: GameState = {
@@ -41,6 +43,8 @@ const initialState: GameState = {
   chestPos: { x: 8, z: 3 },
   scrollPos: { x: 0, z: 6 },
   chestOpen: false,
+  qualityMode: 'auto',
+  effectiveQuality: 'high',
 }
 
 export const useGameStore = create<GameState & GameActions>((set) => ({
@@ -75,6 +79,8 @@ export const useGameStore = create<GameState & GameActions>((set) => ({
   setIntroZoom: (introZoom) => set({ introZoom }),
   setIntroZoomDist: (introZoomDist) => set({ introZoomDist }),
   openChest: () => set({ chestOpen: true }),
+  setQualityMode: (qualityMode) => set({ qualityMode }),
+  setEffectiveQuality: (effectiveQuality) => set({ effectiveQuality }),
 }))
 
 // Snapshot accessor for use outside React (game loop, raycaster)
