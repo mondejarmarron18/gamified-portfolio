@@ -430,7 +430,9 @@ export function GameCanvas() {
       qualityMode === 'auto' ? 'high' : qualityMode === 'high' ? 'low' : 'auto'
     store.setQualityMode(next)
     if (typeof window !== 'undefined') localStorage.setItem('iforgetech-quality-mode', next)
-    // Reset auto-detection state whenever mode changes so stale timers don't fire on re-entry
+    // Reset auto-detection state on every mode change so stale timers don't fire on re-entry.
+    // Setting lockoutEnd to 0 means auto-detection re-engages immediately (no forced 10s
+    // wait on manual override → auto transition — the user just chose auto intentionally).
     autoDowngradeTimerRef.current = 0
     autoUpgradeTimerRef.current = 0
     autoLockoutEndRef.current = 0

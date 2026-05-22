@@ -123,10 +123,13 @@ export function useThreeScene(
       ? localStorage.getItem('iforgetech-quality-mode')
       : null) as 'auto' | 'high' | 'low' | null
 
-    if (savedMode && savedMode !== 'auto') {
-      useGameStore.getState().setQualityMode(savedMode)
-      useGameStore.getState().setEffectiveQuality(savedMode === 'low' ? 'low' : 'high')
-      applyQuality({ renderer, scene, grassMeshes, treeGroups, flowerGroups, butterflies }, savedMode === 'low' ? 'low' : 'high')
+    // Only restore low quality — renderer already initializes to high quality defaults
+    if (savedMode === 'low') {
+      useGameStore.getState().setQualityMode('low')
+      useGameStore.getState().setEffectiveQuality('low')
+      applyQuality({ renderer, scene, grassMeshes, treeGroups, flowerGroups, butterflies }, 'low')
+    } else if (savedMode === 'high') {
+      useGameStore.getState().setQualityMode('high')
     }
 
     return () => {
