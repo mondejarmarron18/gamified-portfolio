@@ -10,7 +10,11 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   plugins: [
-    tanstackStart(),
+    tanstackStart({
+      server: {
+        preset: 'vercel',
+      },
+    }),
     viteReact(),
   ],
   optimizeDeps: {
