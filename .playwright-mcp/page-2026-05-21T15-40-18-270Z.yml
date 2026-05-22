@@ -1,0 +1,24 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - generic: ⚒ iForgeTech
+      - generic: Software Engineer · AI Automation
+      - generic:
+        - generic: Pickaxe
+    - generic:
+      - generic: Discoveries
+      - generic: 0 / 3
+    - button "🌅 Morning" [ref=e11] [cursor=pointer]
+    - generic:
+      - generic: Right-click
+      - text: Walk
+      - generic: ·
+      - generic: Left-click
+      - text: Mine / Interact
+      - generic: ·
+      - generic: Scroll
+      - text: Zoom
+    - generic: 📋 Experience — Click to read
+    - generic: 📦 Treasure Chest — Click to view Projects
+    - generic: 💛 Gold Rock — Mine to view Resume
+    - generic: 📜 Contact — Click to send a message

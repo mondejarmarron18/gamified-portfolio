@@ -17,13 +17,12 @@ export interface ExperienceEntry {
 
 export interface Skill {
   name: string
-  level: 'Expert' | 'Advanced' | 'Intermediate' | 'Beginner'
+  stars: number  // out of 5; max used is 4
 }
 
-export interface Education {
-  degree: string
-  school: string
-  year: string
+export interface SkillGroup {
+  group: string
+  skills: Skill[]
 }
 
 export interface ContactInfo {
@@ -33,8 +32,7 @@ export interface ContactInfo {
 }
 
 export interface Resume {
-  skills: Skill[]
+  skillGroups: SkillGroup[]
   tools: string[]
-  education: Education
   contact: ContactInfo
 }

@@ -102,7 +102,7 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   sCtx.textAlign = 'center'
   sCtx.textBaseline = 'middle'
   sCtx.font = 'bold 30px serif'
-  sCtx.fillText('EXPERIENCE', 128, 52)
+  sCtx.fillText('QUEST LOG', 128, 52)
   sCtx.font = '18px serif'
   sCtx.fillStyle = '#e0b84a'
   sCtx.fillText('[ Click to Read ]', 128, 88)
@@ -298,112 +298,167 @@ export function buildChest(
 export function buildScroll(scene: THREE.Scene, scrollPos: Vec2): THREE.Group {
   const scrollGroup = new THREE.Group()
 
+  const woodMat  = new THREE.MeshStandardMaterial({ color: 0x5a2e0a, roughness: 0.88 })
+  const ivoryMat = new THREE.MeshStandardMaterial({ color: 0xe8d8a8, roughness: 0.75 })
+  const sealMat  = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.55, metalness: 0.1 })
+  const sealTopMat = new THREE.MeshStandardMaterial({ color: 0x660000, roughness: 0.45 })
+  const ribbonMat  = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.7 })
+  const backMat    = new THREE.MeshStandardMaterial({ color: 0xaa7e40, roughness: 0.95, side: THREE.BackSide })
+
+  // ── Roll body ─────────────────────────────────────────────────────────────
+  // Parchment texture wrapping the cylindrical roll
+  const rollCan = document.createElement('canvas')
+  rollCan.width = 256; rollCan.height = 64
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const rCtx = rollCan.getContext('2d')!
+  const rGrad = rCtx.createLinearGradient(0, 0, 0, 64)
+  rGrad.addColorStop(0, '#f0d890'); rGrad.addColorStop(0.5, '#d8b860'); rGrad.addColorStop(1, '#c0a040')
+  rCtx.fillStyle = rGrad; rCtx.fillRect(0, 0, 256, 64)
+  rCtx.strokeStyle = 'rgba(80,40,0,.15)'; rCtx.lineWidth = 1.2
+  for (let i = 0; i < 5; i++) { rCtx.beginPath(); rCtx.moveTo(0, i * 14 + 5); rCtx.lineTo(256, i * 14 + 5); rCtx.stroke() }
+  const rollTex = new THREE.CanvasTexture(rollCan)
+  rollTex.wrapS = THREE.RepeatWrapping; rollTex.repeat.set(5, 1)
+  const rollMat = new THREE.MeshStandardMaterial({ map: rollTex, roughness: 0.88, metalness: 0.01 })
+
+  // The roll cylinder lying on its side (axis along X)
+  const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.3, 16), rollMat)
+  roll.rotation.z = Math.PI / 2
+  roll.position.set(0, 0.14, 0)
+  roll.castShadow = true
+  scrollGroup.add(roll)
+
+  // Wooden rod through the entire roll
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.9, 8), woodMat)
+  rod.rotation.z = Math.PI / 2
+  rod.position.set(0, 0.14, 0)
+  rod.castShadow = true
+  scrollGroup.add(rod)
+
+  // Ivory end caps + round finial knobs at each tip
+  ;[-1, 1].forEach((side) => {
+    const capX = side * 0.69
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.06, 12), ivoryMat)
+    cap.rotation.z = Math.PI / 2
+    cap.position.set(capX, 0.14, 0)
+    scrollGroup.add(cap)
+
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), ivoryMat)
+    knob.scale.set(1, 1, 0.85)
+    knob.position.set(capX + side * 0.075, 0.14, 0)
+    scrollGroup.add(knob)
+  })
+
+  // ── Flat unrolled parchment section ──────────────────────────────────────
+  // Canvas with aged parchment + text visible from above
   const pCan = document.createElement('canvas')
-  pCan.width = 512
-  pCan.height = 512
+  pCan.width = 512; pCan.height = 512
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const pCtx = pCan.getContext('2d')!
 
-  const grad = pCtx.createRadialGradient(256, 256, 60, 256, 256, 280)
-  grad.addColorStop(0, '#e8d080')
-  grad.addColorStop(0.5, '#d8b86a')
-  grad.addColorStop(1, '#a87c38')
-  pCtx.fillStyle = grad
-  pCtx.fillRect(0, 0, 512, 512)
+  const pGrad = pCtx.createLinearGradient(0, 0, 512, 512)
+  pGrad.addColorStop(0, '#f4e09a'); pGrad.addColorStop(0.4, '#e8cc72')
+  pGrad.addColorStop(0.8, '#d4b458'); pGrad.addColorStop(1, '#c0a040')
+  pCtx.fillStyle = pGrad; pCtx.fillRect(0, 0, 512, 512)
 
-  for (let y = 0; y < 512; y++)
-    for (let x = 0; x < 512; x++) {
-      const v = (Math.random() - 0.5) * 22
-      pCtx.fillStyle = `rgba(${v > 0 ? '255,220,140' : '80,40,0'},${Math.abs(v) / 255})`
-      pCtx.fillRect(x, y, 1, 1)
+  // Grain texture
+  for (let py = 0; py < 512; py += 2)
+    for (let px = 0; px < 512; px += 2) {
+      const v = (Math.random() - 0.5) * 20
+      pCtx.fillStyle = `rgba(${v > 0 ? '255,225,145' : '60,28,0'},${Math.abs(v) / 255})`
+      pCtx.fillRect(px, py, 2, 2)
     }
 
-  const edgeG = pCtx.createRadialGradient(256, 256, 100, 256, 256, 285)
-  edgeG.addColorStop(0, 'rgba(0,0,0,0)')
-  edgeG.addColorStop(0.7, 'rgba(30,10,0,.15)')
-  edgeG.addColorStop(1, 'rgba(60,20,0,.6)')
-  pCtx.fillStyle = edgeG
-  pCtx.fillRect(0, 0, 512, 512)
+  // Edge aging gradient
+  const eGrad = pCtx.createRadialGradient(256, 256, 80, 256, 256, 290)
+  eGrad.addColorStop(0, 'rgba(0,0,0,0)'); eGrad.addColorStop(0.65, 'rgba(30,12,0,.12)')
+  eGrad.addColorStop(1, 'rgba(70,25,0,.55)')
+  pCtx.fillStyle = eGrad; pCtx.fillRect(0, 0, 512, 512)
 
-  pCtx.strokeStyle = 'rgba(80,45,8,.5)'
-  pCtx.lineWidth = 2.5
+  // Decorative double border
+  pCtx.strokeStyle = 'rgba(80,40,6,.6)'; pCtx.lineWidth = 5
   pCtx.strokeRect(22, 22, 468, 468)
-  pCtx.font = 'bold 32px Georgia,serif'
-  pCtx.fillStyle = 'rgba(50,22,4,.85)'
-  pCtx.textAlign = 'center'
-  pCtx.textBaseline = 'middle'
-  pCtx.fillText('📜 CONTACT', 256, 68)
-  pCtx.font = 'italic 18px Georgia,serif'
-  pCtx.fillStyle = 'rgba(60,30,5,.7)'
-  pCtx.fillText('Left-click to open', 256, 115)
-  pCtx.font = '14px Georgia,serif'
-  pCtx.fillStyle = 'rgba(55,25,5,.35)'
-  ;['hello@iforgetech.com', 'github.com/iforgetech', 'Software Engineer · AI Automation'].forEach(
-    (t, i) => pCtx.fillText(t, 256, 148 + i * 24),
-  )
+  pCtx.lineWidth = 1.5; pCtx.strokeStyle = 'rgba(80,40,6,.3)'
+  pCtx.strokeRect(34, 34, 444, 444)
 
+  // Small corner ornaments
+  ;[[22,22],[490,22],[22,490],[490,490]].forEach(([cx, cy]) => {
+    pCtx.beginPath(); pCtx.arc(cx!, cy!, 8, 0, Math.PI * 2)
+    pCtx.fillStyle = 'rgba(80,40,6,.5)'; pCtx.fill()
+  })
+
+  // Title
+  pCtx.fillStyle = 'rgba(45,18,2,.92)'
+  pCtx.font = 'bold 38px Georgia,serif'
+  pCtx.textAlign = 'center'; pCtx.textBaseline = 'middle'
+  pCtx.fillText('~ REACH OUT ~', 256, 90)
+
+  // Divider line
+  pCtx.strokeStyle = 'rgba(80,40,6,.35)'; pCtx.lineWidth = 2
+  pCtx.beginPath(); pCtx.moveTo(80, 118); pCtx.lineTo(432, 118); pCtx.stroke()
+
+  // Body text
+  pCtx.font = 'italic 21px Georgia,serif'; pCtx.fillStyle = 'rgba(55,25,4,.78)'
+  pCtx.fillText('Reach out to the herald', 256, 155)
+  pCtx.fillText('and send a message', 256, 183)
+
+  pCtx.strokeStyle = 'rgba(80,40,6,.25)'; pCtx.lineWidth = 1.5
+  pCtx.beginPath(); pCtx.moveTo(80, 205); pCtx.lineTo(432, 205); pCtx.stroke()
+
+  pCtx.font = '17px Georgia,serif'; pCtx.fillStyle = 'rgba(55,25,4,.55)'
+  pCtx.fillText('[ Click to open ]', 256, 235)
+
+  // Leave bottom half blank for wax seal placement
   const parchTex = new THREE.CanvasTexture(pCan)
-  const faceMat = new THREE.MeshStandardMaterial({ map: parchTex, roughness: 0.9, metalness: 0.01 })
-  const backMat = new THREE.MeshStandardMaterial({ color: 0xaa7e40, roughness: 0.95 })
+  const faceMat = new THREE.MeshStandardMaterial({ map: parchTex, roughness: 0.88, metalness: 0.01 })
 
-  const paperGeo = new THREE.PlaneGeometry(1.4, 1.8, 10, 16)
-  const ppPos = paperGeo.attributes['position'] as THREE.BufferAttribute
-  for (let i = 0; i < ppPos.count; i++) {
-    const x = ppPos.getX(i)
-    const y = ppPos.getY(i)
-    const tNorm = (y + 0.9) / 1.8
-    const curl = Math.sin(tNorm * Math.PI) * 0.12
-    const sideCurl = Math.sin((x / 0.7) * Math.PI * 0.5) * 0.06 * (1 - tNorm)
-    ppPos.setZ(i, curl + sideCurl)
+  // Slightly wavy/curled flat geometry (natural unrolled look)
+  const flatGeo = new THREE.PlaneGeometry(1.3, 1.05, 10, 12)
+  const fPos = flatGeo.attributes['position'] as THREE.BufferAttribute
+  for (let i = 0; i < fPos.count; i++) {
+    const fx = fPos.getX(i)
+    const fy = fPos.getY(i)
+    // Slight curl at top edge (near roll) and gentle side waves
+    const tNorm = (fy + 0.525) / 1.05
+    const z = Math.sin(tNorm * Math.PI * 0.25) * 0.035 + Math.abs(fx / 0.65) * 0.018 * (1 - tNorm)
+    fPos.setZ(i, z)
   }
-  paperGeo.computeVertexNormals()
+  flatGeo.computeVertexNormals()
 
-  const paper = new THREE.Mesh(paperGeo, faceMat)
-  paper.rotation.x = 0.12
-  paper.position.set(0, 0.92, 0.05)
-  paper.castShadow = true
-  scrollGroup.add(paper)
+  const flat = new THREE.Mesh(flatGeo, faceMat)
+  flat.rotation.x = -Math.PI / 2
+  flat.position.set(0, 0.014, 0.665)
+  flat.castShadow = true; flat.receiveShadow = true
+  scrollGroup.add(flat)
 
-  const paperBack = new THREE.Mesh(paperGeo.clone(), backMat)
-  paperBack.rotation.x = 0.12
-  paperBack.position.set(0, 0.92, 0.03)
-  paperBack.scale.z = -1
-  scrollGroup.add(paperBack)
+  const flatBack = new THREE.Mesh(flatGeo.clone(), backMat)
+  flatBack.rotation.x = -Math.PI / 2
+  flatBack.position.set(0, 0.01, 0.665)
+  scrollGroup.add(flatBack)
 
-  const edgeMat = new THREE.MeshStandardMaterial({ color: 0xb89050, roughness: 0.9 })
-  ;[[-0.71, 0], [0.71, 0]].forEach(([ex]) => {
-    const edge = new THREE.Mesh(new THREE.BoxGeometry(0.015, 1.82, 0.14), edgeMat)
-    edge.position.set(ex!, 0.92, 0.1)
-    edge.rotation.x = 0.12
-    scrollGroup.add(edge)
-  })
-  const bottomEdge = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.015, 0.14), edgeMat)
-  bottomEdge.position.set(0, 0.015, 0.1)
-  scrollGroup.add(bottomEdge)
-
-  const propMat = new THREE.MeshStandardMaterial({ color: 0x5a4838, roughness: 0.95 })
-  const prop = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 0.16), propMat)
-  prop.position.set(0, 0.06, 0.04)
-  prop.rotation.x = 0.12
-  scrollGroup.add(prop)
-  ;[-0.4, 0.4].forEach((sx) => {
-    const stn = new THREE.Mesh(new THREE.DodecahedronGeometry(0.1, 0), propMat)
-    stn.position.set(sx, 0.08, 0.08)
-    scrollGroup.add(stn)
-  })
-
-  const sealMat = new THREE.MeshStandardMaterial({ color: 0x881010, roughness: 0.65, metalness: 0.1 })
-  const seal = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.025, 16), sealMat)
-  seal.position.set(0, 0.78, 0.22)
-  seal.rotation.x = Math.PI / 2 + 0.12
+  // ── Wax seal ──────────────────────────────────────────────────────────────
+  const seal = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.032, 16), sealMat)
+  seal.position.set(0, 0.032, 0.85)
+  seal.castShadow = true
   scrollGroup.add(seal)
 
+  const sealTop = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.038, 8), sealTopMat)
+  sealTop.position.set(0, 0.05, 0.85)
+  scrollGroup.add(sealTop)
+
+  // Ribbon strips from roll to seal
+  ;[-0.09, 0.09].forEach((xo) => {
+    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.009, 0.56), ribbonMat)
+    rib.position.set(xo, 0.022, 0.44)
+    scrollGroup.add(rib)
+  })
+
+  // ── Glow ──────────────────────────────────────────────────────────────────
   const gl = new THREE.PointLight(0xffcc44, 0.6, 3.5)
-  gl.position.set(0, 1.0, 0.3)
+  gl.position.set(0, 0.6, 0.5)
   scrollGroup.add(gl)
+
   scrollGroup.userData['type'] = 'scroll'
   scrollGroup.userData['glow'] = gl
-
   scrollGroup.position.set(scrollPos.x, 0, scrollPos.z)
   scrollGroup.rotation.y = Math.PI * 0.25
   scene.add(scrollGroup)

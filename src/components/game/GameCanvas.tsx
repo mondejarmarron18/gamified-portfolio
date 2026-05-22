@@ -36,10 +36,10 @@ interface HintConfig {
 }
 
 const HINT_CONFIGS: HintConfig[] = [
-  { id: 'sign',   text: '📋 Experience — Click to read',     worldPos: new THREE.Vector3(-8, 3.6, 3) },
-  { id: 'chest',  text: '📦 Treasure Chest — Click to view Projects', worldPos: new THREE.Vector3(8, 2.2, 3) },
-  { id: 'gold',   text: '💛 Gold Rock — Mine to view Resume', worldPos: new THREE.Vector3(0, 3.0, -11) },
-  { id: 'scroll', text: '📜 Contact — Click to send a message', worldPos: new THREE.Vector3(0, 0.9, 6) },
+  { id: 'sign',   text: '📋 Quest Log — Click to read',        worldPos: new THREE.Vector3(-8, 3.6, 3) },
+  { id: 'chest',  text: '📦 Creations — Click to explore',     worldPos: new THREE.Vector3(8, 2.2, 3) },
+  { id: 'gold',   text: '💛 Character Sheet — Mine to unlock', worldPos: new THREE.Vector3(0, 3.0, -11) },
+  { id: 'scroll', text: '📜 Reach Out — Click to open',        worldPos: new THREE.Vector3(0, 0.9, 6) },
 ]
 
 export function GameCanvas() {
@@ -47,6 +47,7 @@ export function GameCanvas() {
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const [gameStarted, setGameStarted] = useState(false)
   const [isDay, setIsDay] = useState(true)
+  const [fps, setFps] = useState(60)
   const [hintLabels, setHintLabels] = useState(
     HINT_CONFIGS.map((h) => ({ id: h.id, text: h.text, x: 0, y: 0, visible: false })),
   )
@@ -106,12 +107,7 @@ export function GameCanvas() {
     const gs = getState()
     const { setTarget, setWalking } = useGameStore.getState()
 
-    if (hit.type === 'ground') {
-      setTarget(hit.point)
-      setWalking(true)
-      showWalkMarker(clientX, clientY)
-      return
-    }
+    if (hit.type === 'ground') return
     if (hit.type === 'crackedGold') { openModal('resume'); return }
     if (hit.type === 'sign') {
       const dist = Math.hypot(gs.player.x - gs.signPos.x, gs.player.z - gs.signPos.z)
@@ -312,6 +308,17 @@ export function GameCanvas() {
         const r = gs.rocks[i]!
         if (r.cracked) {
           h.gemLight.intensity = 3 + Math.sin(elapsed * 2.2 + i) * 1.2
+          // Animate the persistent gold nugget
+          const nugget = h.group.userData['nugget'] as THREE.Mesh | undefined
+          const nuggetLight = h.group.userData['nuggetLight'] as THREE.PointLight | undefined
+          if (nugget) {
+            const baseY = nugget.userData['baseY'] as number
+            nugget.position.y = baseY + Math.sin(elapsed * 2.4 + i) * 0.08
+            nugget.rotation.y += 0.022
+          }
+          if (nuggetLight) {
+            nuggetLight.intensity = 3 + Math.sin(elapsed * 3.1 + i) * 1.2
+          }
         } else {
           h.group.position.y = Math.sin(elapsed * 1.3 + h.bobOffset) * 0.05
           const d = Math.hypot(gs.player.x - r.pos.x, gs.player.z - r.pos.z)
@@ -340,6 +347,7 @@ export function GameCanvas() {
       updateSkyDrift(refs.sky, elapsed)
 
       if (Math.round(elapsed * 60) % 3 === 0) {
+        setFps(dt > 0 ? Math.round(1 / dt) : 60)
         const W = refs.renderer.domElement.clientWidth
         const H = refs.renderer.domElement.clientHeight
         setHintLabels(
@@ -402,6 +410,7 @@ export function GameCanvas() {
         onToggleDayNight={handleToggleDayNight}
         hintLabels={hintLabels}
         isMobile={IS_MOBILE}
+        fps={fps}
       />
       <Modal>
         {ModalContent && <ModalContent />}

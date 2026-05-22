@@ -1,0 +1,98 @@
+- generic [ref=e2] [cursor=pointer]:
+  - generic:
+    - generic:
+      - generic: ⚒ iForgeTech
+      - generic: Software Engineer · AI Automation
+      - generic:
+        - generic: Pickaxe
+    - generic:
+      - generic: Discoveries
+      - generic: 1 / 3
+    - button "🌙 Evening" [ref=e10]
+    - generic:
+      - generic: Right-click
+      - text: Walk
+      - generic: ·
+      - generic: Left-click
+      - text: Mine / Interact
+      - generic: ·
+      - generic: Scroll
+      - text: Zoom
+    - generic: 📦 Treasure Chest — Click to view Projects
+    - generic: 📜 Contact — Click to send a message
+  - generic [ref=e12]:
+    - button "✕" [ref=e13]
+    - generic [ref=e14]: 📦
+    - heading "Treasure Chest" [level=2] [ref=e15]
+    - paragraph [ref=e16]: Portfolio Projects
+    - separator [ref=e17]
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: 💎
+        - generic [ref=e21]: AI SMS Booking System
+        - generic [ref=e22]: SMS lead qualification + appointment booking via Claude AI & GoHighLevel CRM.
+        - generic [ref=e23]:
+          - generic [ref=e24]: Node.js
+          - generic [ref=e25]: Express
+          - generic [ref=e26]: Claude AI
+          - generic [ref=e27]: GoHighLevel
+          - generic [ref=e28]: SMS
+        - generic [ref=e29]:
+          - link "Live" [ref=e30]:
+            - /url: "#"
+          - link "GitHub" [ref=e31]:
+            - /url: "#"
+      - generic [ref=e32]:
+        - generic [ref=e33]: 🔮
+        - generic [ref=e34]: GHL Lovable Integration
+        - generic [ref=e35]: Polling-based sync engine between GoHighLevel and Lovable using updatedAt timestamps.
+        - generic [ref=e36]:
+          - generic [ref=e37]: GHL API
+          - generic [ref=e38]: TypeScript
+          - generic [ref=e39]: Polling
+          - generic [ref=e40]: Webhooks
+        - generic [ref=e41]:
+          - link "Live" [ref=e42]:
+            - /url: "#"
+          - link "GitHub" [ref=e43]:
+            - /url: "#"
+      - generic [ref=e44]:
+        - generic [ref=e45]: 🏔️
+        - generic [ref=e46]: Roof Inspector Street View
+        - generic [ref=e47]: Single-file HTML tool — shareable property links loading Google Street View directly.
+        - generic [ref=e48]:
+          - generic [ref=e49]: HTML
+          - generic [ref=e50]: Google Maps API
+          - generic [ref=e51]: Street View
+        - generic [ref=e52]:
+          - link "Live" [ref=e53]:
+            - /url: "#"
+          - link "GitHub" [ref=e54]:
+            - /url: "#"
+      - generic [ref=e55]:
+        - generic [ref=e56]: 📞
+        - generic [ref=e57]: IVR Call Routing Engine
+        - generic [ref=e58]: Overcame GHL ring-cap with IVR Connect Call blocks and Random Split rotation.
+        - generic [ref=e59]:
+          - generic [ref=e60]: GHL Workflows
+          - generic [ref=e61]: IVR
+          - generic [ref=e62]: Telephony
+          - generic [ref=e63]: Automation
+        - generic [ref=e64]:
+          - link "Live" [ref=e65]:
+            - /url: "#"
+          - link "GitHub" [ref=e66]:
+            - /url: "#"
+      - generic [ref=e67]:
+        - generic [ref=e68]: 📊
+        - generic [ref=e69]: Sheets Client Manager
+        - generic [ref=e70]: Apps Script web app with dynamic dropdowns exposed as a REST API.
+        - generic [ref=e71]:
+          - generic [ref=e72]: Apps Script
+          - generic [ref=e73]: REST API
+          - generic [ref=e74]: Google Sheets
+        - generic [ref=e75]:
+          - link "Live" [ref=e76]:
+            - /url: "#"
+          - link "GitHub" [ref=e77]:
+            - /url: "#"

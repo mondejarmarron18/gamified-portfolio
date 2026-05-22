@@ -14,9 +14,10 @@ interface Props {
   onToggleDayNight: () => void
   hintLabels: HintLabel[]
   isMobile: boolean
+  fps: number
 }
 
-export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile }: Props) {
+export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps }: Props) {
   const stamina = useGameStore((s) => s.stamina)
   const discovered = useGameStore((s) => s.discovered)
 
@@ -31,6 +32,10 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile }: Props) {
             <div className={styles.staminaFill} style={{ width: `${stamina}%` }} />
           </div>
         </div>
+      </div>
+
+      <div className={`${styles.fpsCounter} ${fps >= 50 ? styles.fpsGood : fps >= 30 ? styles.fpsMid : styles.fpsBad}`}>
+        {fps} <span className={styles.fpsLabel}>fps</span>
       </div>
 
       <div className={styles.topRight}>

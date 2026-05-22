@@ -5,8 +5,8 @@ export function ProjectsModal() {
   return (
     <>
       <div className={styles.icon}>📦</div>
-      <h2 className={styles.title}>Treasure Chest</h2>
-      <p className={styles.subtitle}>Portfolio Projects</p>
+      <h2 className={styles.title}>Creations</h2>
+      <p className={styles.subtitle}>Built Works</p>
       <hr className={styles.divider} />
       <div className={styles.projectGrid}>
         {projects.map((p) => (

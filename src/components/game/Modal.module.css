@@ -21,6 +21,29 @@
   overflow-y: auto;
   box-shadow: 0 0 60px rgba(255, 107, 26, 0.22), 0 24px 70px rgba(0, 0, 0, 0.7);
   animation: slideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #c9903a #1a0e04;
+}
+
+.card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card::-webkit-scrollbar-track {
+  background: #1a0e04;
+  border-radius: 6px;
+}
+
+.card::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff6b1a, #c9903a, #7a4010);
+  border-radius: 6px;
+  border: 1px solid rgba(201, 144, 58, 0.2);
+}
+
+.card::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffaa44, #e0a840, #aa5818);
+  box-shadow: 0 0 6px rgba(255, 107, 26, 0.6);
 }
 
 .card::before {

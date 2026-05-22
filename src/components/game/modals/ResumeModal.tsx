@@ -1,6 +1,16 @@
 import { resume } from '@/data'
 import styles from './Modals.module.css'
 
+function Stars({ count }: { count: number }) {
+  return (
+    <span className={styles.stars}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <span key={i} className={i < count ? styles.starFilled : styles.starEmpty}>★</span>
+      ))}
+    </span>
+  )
+}
+
 export function ResumeModal() {
   function downloadCV() {
     const lines = [
@@ -9,13 +19,13 @@ export function ResumeModal() {
       '=====================================',
       '',
       'SKILLS',
-      ...resume.skills.map((s) => `${s.name} — ${s.level}`),
+      ...resume.skillGroups.flatMap((g) => [
+        `\n${g.group}`,
+        ...g.skills.map((s) => `  ${s.name} — ${'★'.repeat(s.stars)}${'☆'.repeat(5 - s.stars)}`),
+      ]),
       '',
       'TOOLS',
       resume.tools.join(', '),
-      '',
-      'EDUCATION',
-      `${resume.education.degree}, ${resume.education.school} (${resume.education.year})`,
       '',
       'CONTACT',
       ...Object.entries(resume.contact).map(([k, v]) => `${k}: ${v}`),
@@ -34,19 +44,21 @@ export function ResumeModal() {
   return (
     <>
       <div className={styles.icon}>📜</div>
-      <h2 className={styles.title}>iForgeTech — Résumé</h2>
-      <p className={styles.subtitle}>Software Engineer · AI Automation</p>
+      <h2 className={styles.title}>Character Sheet</h2>
+      <p className={styles.subtitle}>Skills & Stack</p>
       <hr className={styles.divider} />
       <div className={styles.body}>
-        <section className={styles.resSection}>
-          <h3 className={styles.resHead}>Skills</h3>
-          {resume.skills.map((s) => (
-            <div key={s.name} className={styles.resRow}>
-              <span className={styles.resLabel}>{s.name}</span>
-              <span className={styles.resVal}>{s.level}</span>
-            </div>
-          ))}
-        </section>
+        {resume.skillGroups.map((g) => (
+          <section key={g.group} className={styles.resSection}>
+            <h3 className={styles.resHead}>{g.group}</h3>
+            {g.skills.map((s) => (
+              <div key={s.name} className={styles.resRow}>
+                <span className={styles.resLabel}>{s.name}</span>
+                <Stars count={s.stars} />
+              </div>
+            ))}
+          </section>
+        ))}
         <section className={styles.resSection}>
           <h3 className={styles.resHead}>Tools &amp; Platforms</h3>
           <div className={styles.tagRow}>
@@ -54,14 +66,6 @@ export function ResumeModal() {
               <span key={t} className={styles.tag}>{t}</span>
             ))}
           </div>
-        </section>
-        <section className={styles.resSection}>
-          <h3 className={styles.resHead}>Education</h3>
-          <div className={styles.resRow}>
-            <span className={styles.resLabel}>{resume.education.degree}</span>
-            <span className={styles.resVal}>{resume.education.year}</span>
-          </div>
-          <div className={styles.resVal}>{resume.education.school}</div>
         </section>
         <div className={styles.btnRow}>
           <button className={styles.btn} onClick={downloadCV}>⬇ Download CV</button>

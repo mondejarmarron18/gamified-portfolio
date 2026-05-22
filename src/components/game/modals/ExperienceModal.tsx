@@ -5,8 +5,8 @@ export function ExperienceModal() {
   return (
     <>
       <div className={styles.icon}>📋</div>
-      <h2 className={styles.title}>Experience</h2>
-      <p className={styles.subtitle}>The Journey of the Craftsman</p>
+      <h2 className={styles.title}>Quest Log</h2>
+      <p className={styles.subtitle}>Work History</p>
       <hr className={styles.divider} />
       <div className={styles.body}>
         {experience.map((e) => (

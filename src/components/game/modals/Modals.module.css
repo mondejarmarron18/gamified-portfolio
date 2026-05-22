@@ -1,45 +1,51 @@
 .icon  { font-size: 2rem; text-align: center; margin-bottom: .4rem; }
-.title { font-family: 'Cinzel', serif; font-size: clamp(1.1rem, 3vw, 1.55rem); font-weight: 900; color: #f0c060; text-align: center; text-shadow: 0 0 18px rgba(255,107,26,.5); letter-spacing: .05em; margin: 0; }
-.subtitle { text-align: center; font-size: .66rem; color: #ff6b1a; letter-spacing: .18em; text-transform: uppercase; margin: 3px 0 .8rem; }
+.title { font-family: 'Cinzel', serif; font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 900; color: #f0c060; text-align: center; text-shadow: 0 0 18px rgba(255,107,26,.5); letter-spacing: .05em; margin: 0; }
+.subtitle { text-align: center; font-size: .8rem; color: #ff6b1a; letter-spacing: .18em; text-transform: uppercase; margin: 3px 0 .8rem; }
 .divider { border: none; border-top: 1px solid rgba(201,144,58,.25); margin: .8rem 0; }
-.body { color: #c0a07a; font-size: .92rem; line-height: 1.8; }
+.body { color: #c0a07a; font-size: 1rem; line-height: 1.8; }
 
 .expItem    { display: flex; gap: 1rem; margin-bottom: 1.2rem; align-items: flex-start; }
 .expDot     { width: 10px; height: 10px; border-radius: 50%; background: #ff6b1a; margin-top: .35rem; flex-shrink: 0; box-shadow: 0 0 8px #ff6b1a; }
-.expRole    { font-family: 'Cinzel', serif; font-size: .85rem; color: #f0c060; font-weight: 700; }
-.expCompany { font-size: .8rem; color: #ff9a3c; }
-.expDate    { font-size: .7rem; color: #8a6840; margin-top: 2px; }
-.expDesc    { font-size: .82rem; color: #b09070; margin-top: .35rem; line-height: 1.6; }
+.expRole    { font-family: 'Cinzel', serif; font-size: .95rem; color: #f0c060; font-weight: 700; }
+.expCompany { font-size: .9rem; color: #ff9a3c; }
+.expDate    { font-size: .8rem; color: #8a6840; margin-top: 2px; }
+.expDesc    { font-size: .9rem; color: #b09070; margin-top: .35rem; line-height: 1.6; }
 
 .projectGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem; margin-top: .5rem; }
 .projectCard { background: rgba(40,20,6,.5); border: 1px solid rgba(90,55,28,.7); border-radius: 8px; padding: .9rem 1rem; transition: border-color .2s, box-shadow .2s; }
 .projectCard:hover { border-color: #c9903a; box-shadow: 0 0 14px rgba(255,107,26,.2); }
 .projectGem  { font-size: 1.4rem; margin-bottom: .3rem; }
-.projectName { font-family: 'Cinzel', serif; font-size: .82rem; color: #f0c060; font-weight: 700; margin-bottom: .4rem; }
-.projectDesc { font-size: .75rem; color: #a08060; line-height: 1.55; margin-bottom: .5rem; }
+.projectName { font-family: 'Cinzel', serif; font-size: .92rem; color: #f0c060; font-weight: 700; margin-bottom: .4rem; }
+.projectDesc { font-size: .85rem; color: #a08060; line-height: 1.55; margin-bottom: .5rem; }
 
 .resSection { margin-bottom: 1.1rem; }
-.resHead    { font-family: 'Cinzel', serif; font-size: .78rem; color: #ff6b1a; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
+.resHead    { font-family: 'Cinzel', serif; font-size: .88rem; color: #ff6b1a; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
 .resHead::after { content: ''; flex: 1; height: 1px; background: rgba(201,144,58,.25); }
-.resRow     { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .3rem; }
-.resLabel   { font-size: .82rem; color: #f0c060; }
-.resVal     { font-size: .78rem; color: #9a7850; }
+.resRow     { display: flex; justify-content: space-between; align-items: center; margin-bottom: .35rem; }
+.resLabel   { font-size: .92rem; color: #f0c060; }
+.resVal     { font-size: .88rem; color: #9a7850; }
+.stars      { display: inline-flex; gap: 2px; }
+.starFilled { color: #f0c060; font-size: 1rem; text-shadow: 0 0 6px rgba(240,192,96,.6); }
+.starEmpty  { color: rgba(150,100,30,.3); font-size: 1rem; }
 
 .tagRow  { display: flex; flex-wrap: wrap; gap: 4px; margin-top: .3rem; }
-.tag     { background: rgba(100,50,10,.3); border: 1px solid rgba(80,45,15,.7); border-radius: 3px; padding: 1px 7px; font-size: .6rem; color: #ff9a3c; }
+.tag     { background: rgba(100,50,10,.3); border: 1px solid rgba(80,45,15,.7); border-radius: 3px; padding: 2px 8px; font-size: .72rem; color: #ff9a3c; }
 .btnRow  { display: flex; gap: 8px; flex-wrap: wrap; margin-top: .8rem; justify-content: center; }
-.btn     { padding: .55rem 1.3rem; border-radius: 4px; font-family: 'Cinzel', serif; font-size: .72rem; font-weight: 700; cursor: pointer; letter-spacing: .1em; transition: all .2s; text-decoration: none; display: inline-block; border: 1px solid #c9903a; background: linear-gradient(135deg,#7a3a10,#b85c18); color: #f0c060; box-shadow: 0 0 14px rgba(255,107,26,.25); }
+.btn     { padding: .55rem 1.3rem; border-radius: 4px; font-family: 'Cinzel', serif; font-size: .82rem; font-weight: 700; cursor: pointer; letter-spacing: .1em; transition: all .2s; text-decoration: none; display: inline-block; border: 1px solid #c9903a; background: linear-gradient(135deg,#7a3a10,#b85c18); color: #f0c060; box-shadow: 0 0 14px rgba(255,107,26,.25); }
 .btn:hover { box-shadow: 0 0 26px rgba(255,107,26,.55); transform: translateY(-1px); }
 .btnSecondary { background: transparent; border-color: rgba(90,55,28,.8); color: #9a7850; }
 .btnSecondary:hover { border-color: #c9903a; color: #f0c060; }
 
-.contactForm  { display: flex; flex-direction: column; gap: .9rem; }
-.formGrid     { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-.formLabel    { font-size: .65rem; color: #9a7850; text-transform: uppercase; letter-spacing: .1em; display: flex; flex-direction: column; gap: .35rem; }
-.input        { background: #1a0e04; border: 1px solid rgba(201,144,58,.4); border-radius: 5px; padding: .5rem .7rem; color: #f0c060; font-family: 'Crimson Text', serif; font-size: .9rem; outline: none; width: 100%; box-sizing: border-box; }
-.textarea     { background: #1a0e04; border: 1px solid rgba(201,144,58,.4); border-radius: 5px; padding: .5rem .7rem; color: #f0c060; font-family: 'Crimson Text', serif; font-size: .9rem; outline: none; resize: vertical; width: 100%; box-sizing: border-box; }
-.successMsg   { color: #66cc66; text-align: center; font-size: .9rem; }
-.errorMsg     { color: #cc4444; font-size: .8rem; text-align: center; }
-.directContact { text-align: center; font-size: .72rem; color: #6a5030; margin-top: .2rem; }
-.emailLink    { color: #ff9a3c; text-decoration: none; }
-.emailLink:hover { text-decoration: underline; }
+.contactProfile  { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.avatarFrame     { width: 110px; height: 120px; border-radius: 12px; background: rgba(30,14,4,.6); border: 2px solid rgba(201,144,58,.4); display: flex; align-items: center; justify-content: center; padding: 6px; box-shadow: 0 0 18px rgba(255,107,26,.15); margin-bottom: .2rem; }
+.dwarfSvg        { width: 90px; height: 108px; }
+.contactName     { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #f0c060; font-weight: 700; margin: 0; text-shadow: 0 0 12px rgba(255,107,26,.4); }
+.contactRole     { font-size: .85rem; color: #ff9a3c; margin: 0; letter-spacing: .08em; }
+.contactLocation { font-size: .82rem; color: #9a7850; margin: 0; }
+.contactDetails  { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
+.contactItem     { display: flex; align-items: center; gap: .6rem; color: #c0a07a; font-size: .9rem; text-decoration: none; padding: .35rem .6rem; border-radius: 5px; transition: background .15s, color .15s; }
+.contactItem:hover { background: rgba(201,144,58,.1); color: #f0c060; }
+.contactItemIcon { font-size: 1rem; flex-shrink: 0; }
+.socialRow       { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; margin-top: .3rem; }
+.socialBtn       { display: flex; align-items: center; gap: .35rem; padding: .4rem .85rem; border-radius: 4px; font-family: 'Cinzel', serif; font-size: .76rem; font-weight: 700; letter-spacing: .08em; border: 1px solid rgba(201,144,58,.5); background: rgba(40,20,6,.5); color: #c9903a; text-decoration: none; transition: all .2s; }
+.socialBtn:hover { border-color: #c9903a; background: rgba(201,144,58,.12); color: #f0c060; box-shadow: 0 0 10px rgba(255,107,26,.2); }
