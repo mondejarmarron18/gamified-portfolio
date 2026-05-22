@@ -1,7 +1,12 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import '@/styles/global.css'
 
+function NotFound() {
+  return null
+}
+
 export const Route = createRootRoute({
+  notFoundComponent: NotFound,
   head: () => ({
     meta: [
       { charSet: 'utf-8' },

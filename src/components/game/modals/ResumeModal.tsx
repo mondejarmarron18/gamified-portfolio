@@ -12,35 +12,6 @@ function Stars({ count }: { count: number }) {
 }
 
 export function ResumeModal() {
-  function downloadCV() {
-    const lines = [
-      'iForgeTech — Curriculum Vitae',
-      'Software Engineer & AI Automation',
-      '=====================================',
-      '',
-      'SKILLS',
-      ...resume.skillGroups.flatMap((g) => [
-        `\n${g.group}`,
-        ...g.skills.map((s) => `  ${s.name} — ${'★'.repeat(s.stars)}${'☆'.repeat(5 - s.stars)}`),
-      ]),
-      '',
-      'TOOLS',
-      resume.tools.join(', '),
-      '',
-      'CONTACT',
-      ...Object.entries(resume.contact).map(([k, v]) => `${k}: ${v}`),
-    ]
-    const blob = new Blob([lines.join('\n')], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'iForgeTech_CV.txt'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
-
   return (
     <>
       <div className={styles.icon}>📜</div>
@@ -67,9 +38,7 @@ export function ResumeModal() {
             ))}
           </div>
         </section>
-        <div className={styles.btnRow}>
-          <button className={styles.btn} onClick={downloadCV}>⬇ Download CV</button>
-        </div>
+
       </div>
     </>
   )
