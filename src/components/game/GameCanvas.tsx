@@ -13,6 +13,7 @@ import { animatePlayerWalk, resetPlayerPose } from '@/lib/scene/player'
 import { shakeMesh, explodeRock } from '@/lib/scene/rocks'
 import { spawnSparks, showCrackLabel, showWalkMarker } from '@/lib/effects'
 import { updateButterflies } from '@/lib/scene/butterflies'
+import { applyQuality } from '@/lib/scene/quality'
 import { Hud } from './Hud'
 import { Modal } from './Modal'
 import { ExperienceModal } from './modals/ExperienceModal'
@@ -48,6 +49,8 @@ export function GameCanvas() {
   const [gameStarted, setGameStarted] = useState(false)
   const [isDay, setIsDay] = useState(true)
   const [fps, setFps] = useState(60)
+  const qualityMode = useGameStore((s) => s.qualityMode)
+  const effectiveQuality = useGameStore((s) => s.effectiveQuality)
   const [hintLabels, setHintLabels] = useState(
     HINT_CONFIGS.map((h) => ({ id: h.id, text: h.text, x: 0, y: 0, visible: false })),
   )
@@ -55,6 +58,10 @@ export function GameCanvas() {
   const camThetaRef = useRef(0)
   const camThetaVelRef = useRef(0)
   const campfireActiveRef = useRef(false)
+  const autoDowngradeTimerRef = useRef(0)
+  const autoUpgradeTimerRef = useRef(0)
+  const autoLockoutEndRef = useRef(0)
+  const rollingFpsRef = useRef<number[]>([])
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
@@ -340,7 +347,44 @@ export function GameCanvas() {
       if (campfireLight && campfireActiveRef.current)
         campfireLight.intensity = 4.5 + Math.sin(elapsed * 7.3) * 0.6 + Math.sin(elapsed * 13.7) * 0.3
 
-      updateButterflies(refs.butterflies, dt, elapsed)
+      // Auto quality detection
+      const { qualityMode, effectiveQuality } = gs
+      if (qualityMode === 'auto' && elapsed > autoLockoutEndRef.current && dt > 0) {
+        rollingFpsRef.current.push(1 / dt)
+        if (rollingFpsRef.current.length > 180) rollingFpsRef.current.shift()
+        const avg = rollingFpsRef.current.reduce((a, b) => a + b, 0) / rollingFpsRef.current.length
+
+        if (effectiveQuality === 'high' && avg < 30) {
+          autoDowngradeTimerRef.current += dt
+          if (autoDowngradeTimerRef.current >= 3) {
+            store.setEffectiveQuality('low')
+            applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'low')
+            autoLockoutEndRef.current = elapsed + 10
+            autoDowngradeTimerRef.current = 0
+            rollingFpsRef.current = []
+          }
+        } else {
+          autoDowngradeTimerRef.current = 0
+        }
+
+        if (effectiveQuality === 'low' && avg > 55) {
+          autoUpgradeTimerRef.current += dt
+          if (autoUpgradeTimerRef.current >= 5) {
+            store.setEffectiveQuality('high')
+            applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'high')
+            autoLockoutEndRef.current = elapsed + 10
+            autoUpgradeTimerRef.current = 0
+            rollingFpsRef.current = []
+          }
+        } else {
+          autoUpgradeTimerRef.current = 0
+        }
+      }
+
+      // Skip butterfly animation when hidden (low quality)
+      if (effectiveQuality === 'high') {
+        updateButterflies(refs.butterflies, dt, elapsed)
+      }
 
       if (!gs.walking) refs.player.group.rotation.z = Math.sin(elapsed * 1.2) * 0.014
 
@@ -380,6 +424,24 @@ export function GameCanvas() {
     })
   }
 
+  const handleCycleQuality = useCallback(() => {
+    const { qualityMode } = getState()
+    const refs = sceneRefsRef.current
+    const store = useGameStore.getState()
+    const next: 'auto' | 'high' | 'low' =
+      qualityMode === 'auto' ? 'high' : qualityMode === 'high' ? 'low' : 'auto'
+    store.setQualityMode(next)
+    if (typeof window !== 'undefined') localStorage.setItem('iforgetech-quality-mode', next)
+    if (next === 'high') {
+      store.setEffectiveQuality('high')
+      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'high')
+    } else if (next === 'low') {
+      store.setEffectiveQuality('low')
+      if (refs) applyQuality({ renderer: refs.renderer, scene: refs.scene, grassMeshes: refs.grassMeshes, treeGroups: refs.treeGroups, flowerGroups: refs.flowerGroups, butterflies: refs.butterflies }, 'low')
+    }
+    // 'auto': keep current effectiveQuality, auto-detection takes over from here
+  }, [sceneRefsRef])
+
   if (!gameStarted) {
     return (
       <div className={styles.intro}>
@@ -411,6 +473,9 @@ export function GameCanvas() {
         hintLabels={hintLabels}
         isMobile={IS_MOBILE}
         fps={fps}
+        qualityMode={qualityMode}
+        effectiveQuality={effectiveQuality}
+        onCycleQuality={handleCycleQuality}
       />
       <Modal>
         {ModalContent && <ModalContent />}
