@@ -121,7 +121,8 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
   }
 }
 
-export function buildGrass(scene: THREE.Scene): void {
+export function buildGrass(scene: THREE.Scene): THREE.Mesh[] {
+  const meshes: THREE.Mesh[] = []
   const configs = [
     { color: 0x3a6418, count: 800, max: 15, min: 2.5 },
     { color: 0x4a7a22, count: 600, max: 14.5, min: 2 },
@@ -167,21 +168,23 @@ export function buildGrass(scene: THREE.Scene): void {
     geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3))
     geo.setIndex(idxs)
     geo.computeVertexNormals()
-    scene.add(
-      new THREE.Mesh(
-        geo,
-        new THREE.MeshStandardMaterial({
-          vertexColors: true,
-          roughness: 0.9,
-          side: THREE.DoubleSide,
-          alphaTest: 0.05,
-        }),
-      ),
+    const mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        roughness: 0.9,
+        side: THREE.DoubleSide,
+        alphaTest: 0.05,
+      }),
     )
+    scene.add(mesh)
+    meshes.push(mesh)
   })
+  return meshes
 }
 
-export function buildTrees(scene: THREE.Scene, tex: SceneTextures): void {
+export function buildTrees(scene: THREE.Scene, tex: SceneTextures): THREE.Group[] {
+  const groups: THREE.Group[] = []
   const positions: [number, number, number][] = [
     [-11, 0, -5], [-13, 0, 1], [-10, 0, 7.5], [10.5, 0, -8],
     [12, 0, 2], [8.5, 0, 8], [-7, 0, -13], [5, 0, -14],
@@ -227,10 +230,13 @@ export function buildTrees(scene: THREE.Scene, tex: SceneTextures): void {
     g.rotation.y = Math.random() * Math.PI * 2
     g.rotation.z = (Math.random() - 0.5) * 0.06
     scene.add(g)
+    groups.push(g)
   })
+  return groups
 }
 
-export function buildFlowers(scene: THREE.Scene): void {
+export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
+  const groups: THREE.Group[] = []
   const flowerColors = [0xff1493, 0xff69b4, 0xff1493, 0xff69b4, 0xff1493, 0xee1177]
   for (let i = 0; i < 55; i++) {
     let fx: number, fz: number, fr: number
@@ -267,7 +273,9 @@ export function buildFlowers(scene: THREE.Scene): void {
     g.position.set(fx, 0, fz)
     g.rotation.y = Math.random() * Math.PI * 2
     scene.add(g)
+    groups.push(g)
   }
+  return groups
 }
 
 export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {
