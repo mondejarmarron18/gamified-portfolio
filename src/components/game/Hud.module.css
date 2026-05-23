@@ -34,41 +34,6 @@
 .discLabel { font-size: .58rem; color: #9a7850; letter-spacing: .1em; text-transform: uppercase; }
 .discCount { font-family: 'Cinzel', serif; font-size: 1.25rem; color: #f0c060; font-weight: 700; text-shadow: 0 0 10px #ff6b1a; }
 
-.centerBtns {
-  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 6px; z-index: 15;
-}
-
-.dayNightBtn {
-  background: rgba(6,4,1,.9); border: 1px solid rgba(201,144,58,.55);
-  border-radius: 20px; padding: 6px 14px; font-family: 'Cinzel', serif;
-  font-size: .68rem; color: #f0c060; cursor: pointer; pointer-events: all;
-  backdrop-filter: blur(8px); box-shadow: 0 0 14px rgba(255,107,26,.18);
-  transition: all .3s; letter-spacing: .08em;
-}
-.dayNightBtn:hover { box-shadow: 0 0 22px rgba(255,107,26,.4); border-color: #f0c060; }
-
-.qualityBtn {
-  background: rgba(6,4,1,.85); border: 1px solid rgba(201,144,58,.35);
-  border-radius: 20px; padding: 4px 12px; font-family: 'Cinzel', serif;
-  font-size: .62rem; color: #c0a050; cursor: pointer; pointer-events: all;
-  backdrop-filter: blur(8px); transition: all .3s; letter-spacing: .08em;
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-}
-.qualityBtn:hover { border-color: rgba(201,144,58,.7); color: #f0c060; }
-
-.qualityAuto {
-  font-size: .48rem; color: #7a6040; letter-spacing: .06em;
-}
-
-.audioBtn {
-  background: rgba(6,4,1,.85); border: 1px solid rgba(201,144,58,.35);
-  border-radius: 50%; width: 30px; height: 30px; font-size: .9rem;
-  cursor: pointer; pointer-events: all; backdrop-filter: blur(8px);
-  transition: all .3s; display: flex; align-items: center; justify-content: center;
-  line-height: 1;
-}
-.audioBtn:hover { border-color: rgba(201,144,58,.7); background: rgba(20,14,2,.9); }
 
 .controls {
   position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
@@ -95,4 +60,76 @@
   border-radius: 6px; padding: 5px 13px; white-space: nowrap; z-index: 15;
   box-shadow: 0 2px 16px rgba(0,0,0,.7), 0 0 10px rgba(255,120,20,.25);
   letter-spacing: .04em; text-shadow: 0 1px 4px rgba(0,0,0,.9); margin-top: -8px;
+}
+
+/* ── Gear settings button ───────────────────────────────── */
+.gearBtn {
+  position: absolute; bottom: 10px; left: 10px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(6,4,1,.92); border: 1px solid rgba(201,144,58,.55);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; color: #f0c060; cursor: pointer; pointer-events: all;
+  box-shadow: 0 0 14px rgba(255,107,26,.22); transition: all .25s; z-index: 15;
+  padding: 0;
+}
+.gearBtn:hover { border-color: #f0c060; box-shadow: 0 0 22px rgba(255,107,26,.45); }
+
+/* ── Settings panel ─────────────────────────────────────── */
+.settingsPanel {
+  position: absolute; bottom: 52px; left: 10px;
+  background: rgba(8,5,1,.97); border: 1px solid rgba(201,144,58,.5);
+  border-radius: 10px; padding: 10px 14px; min-width: 178px;
+  backdrop-filter: blur(14px); pointer-events: all; z-index: 16;
+  box-shadow: 0 8px 32px rgba(0,0,0,.8), 0 0 20px rgba(255,107,26,.1);
+  animation: panelSlideUp .2s ease;
+}
+@keyframes panelSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.settingsPanelTitle {
+  font-family: 'Cinzel', serif; font-size: .54rem; color: #7a5a20;
+  letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px;
+  padding-bottom: 6px; border-bottom: 1px solid rgba(201,144,58,.2);
+}
+
+.settingsPanelRow {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 0; gap: 12px;
+  border-bottom: 1px solid rgba(201,144,58,.07);
+}
+.settingsPanelRow:last-child { border-bottom: none; }
+
+.settingsPanelLabel {
+  font-size: .58rem; color: #c0a050; white-space: nowrap;
+}
+
+.settingsPanelSub {
+  font-size: .48rem; color: #7a6040; margin-left: 2px;
+}
+
+.settingsPillBtn {
+  font-size: .54rem; font-family: 'Cinzel', serif; color: #f0c060;
+  background: rgba(201,144,58,.12); border: 1px solid rgba(201,144,58,.35);
+  border-radius: 10px; padding: 2px 9px; cursor: pointer; pointer-events: all;
+  white-space: nowrap; transition: all .2s;
+}
+.settingsPillBtn:hover { border-color: #f0c060; background: rgba(201,144,58,.2); }
+
+/* Toggle switch */
+.settingsToggle {
+  width: 38px; height: 20px; border-radius: 10px; flex-shrink: 0;
+  background: #2a1a10; border: 1px solid #4a2a18;
+  position: relative; cursor: pointer; pointer-events: all; transition: all .25s;
+}
+.settingsToggleOn {
+  background: #1a4a18; border-color: #3a7a30;
+}
+.settingsToggleDot {
+  position: absolute; top: 3px; left: 3px; width: 12px; height: 12px;
+  border-radius: 50%; background: #6a4020; transition: all .25s;
+}
+.settingsToggleOn .settingsToggleDot {
+  left: 21px; background: #66dd66;
 }
