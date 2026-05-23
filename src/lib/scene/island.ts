@@ -31,7 +31,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
   geo.computeVertexNormals()
   const rockBase = new THREE.Mesh(
     geo,
-    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x4a443a, roughness: 0.97, metalness: 0.06 }),
+    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x5a5448, roughness: 0.95, metalness: 0.06 }),
   )
   rockBase.position.y = -1.5
   rockBase.receiveShadow = true
@@ -57,7 +57,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
   dGeo.computeVertexNormals()
   const dirt = new THREE.Mesh(
     dGeo,
-    new THREE.MeshStandardMaterial({ map: tex.dirt, color: 0x6a4a2a, roughness: 0.94, metalness: 0.02 }),
+    new THREE.MeshStandardMaterial({ map: tex.dirt, color: 0x7a9a35, roughness: 0.92, metalness: 0.02 }),
   )
   dirt.rotation.x = -Math.PI / 2
   dirt.position.y = 0.03
