@@ -36,15 +36,15 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
 
   useEffect(() => {
     if (!settingsOpen) return
-    const handler = (e: MouseEvent) => {
+    const handler = (e: PointerEvent) => {
       const panel = document.querySelector('[data-settings-panel]')
       const gear  = document.querySelector('[data-gear-btn]')
       if (!panel?.contains(e.target as Node) && !gear?.contains(e.target as Node)) {
         setSettingsOpen(false)
       }
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    document.addEventListener('pointerdown', handler)
+    return () => document.removeEventListener('pointerdown', handler)
   }, [settingsOpen])
 
   return (
@@ -74,14 +74,16 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
         data-gear-btn
         className={styles.gearBtn}
         onClick={() => setSettingsOpen((v) => !v)}
-        title="Settings"
+        aria-expanded={settingsOpen}
+        aria-controls="hud-settings-panel"
+        aria-label="Settings"
       >
         ⚙
       </button>
 
       {/* Settings panel — slides up from gear */}
       {settingsOpen && (
-        <div data-settings-panel className={styles.settingsPanel}>
+        <div data-settings-panel id="hud-settings-panel" className={styles.settingsPanel}>
           <div className={styles.settingsPanelTitle}>⚙ Settings</div>
 
           <div className={styles.settingsPanelRow}>
