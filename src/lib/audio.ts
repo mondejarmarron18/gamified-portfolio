@@ -5,6 +5,7 @@ let ctx: AudioContext | null = null
 let masterGain: GainNode | null = null
 let musicGain: GainNode | null = null
 let musicNodes: AudioNode[] = []
+let musicGainNodes: GainNode[] = []   // gain nodes to disconnect on stop
 let walkTimer: ReturnType<typeof setInterval> | null = null
 let _enabled = false
 let _musicRunning = false                        // guards arpeggio/melody loops
@@ -76,6 +77,7 @@ export function startMusic(): void {
   const padGain = c.createGain()
   padGain.gain.value = 0.045
   padGain.connect(gain)
+  musicGainNodes.push(padGain)
 
   padFreqs.forEach(({ freq, type, amp, lfoRate }) => {
     const osc = c.createOscillator()
@@ -105,6 +107,7 @@ export function startMusic(): void {
   const arpGain = c.createGain()
   arpGain.gain.value = 0.08
   arpGain.connect(gain)
+  musicGainNodes.push(arpGain)
 
   scheduleArpNote(c, arpGain, c.currentTime)
 
@@ -132,6 +135,10 @@ function scheduleArpNote(c: AudioContext, arpGain: GainNode, scheduleAt: number)
   env.connect(arpGain)
   osc.start(scheduleAt)
   osc.stop(scheduleAt + 0.42)
+  osc.onended = () => {
+    const idx = musicNodes.indexOf(osc)
+    if (idx !== -1) musicNodes.splice(idx, 1)
+  }
   musicNodes.push(osc)
 
   // Fire next note scheduling 30 ms before it's due (look-ahead)
@@ -160,6 +167,7 @@ function playMelodyAccent(musicGainNode: GainNode): void {
   const accentGain = c.createGain()
   accentGain.gain.value = 0.07
   accentGain.connect(musicGainNode)
+  musicGainNodes.push(accentGain)
 
   MELODY_NOTES.forEach((freq, i) => {
     const t = c.currentTime + i * 0.5
@@ -180,6 +188,10 @@ function playMelodyAccent(musicGainNode: GainNode): void {
       env.connect(accentGain)
       osc.start(t)
       osc.stop(t + 0.62)
+      osc.onended = () => {
+        const idx = musicNodes.indexOf(osc)
+        if (idx !== -1) musicNodes.splice(idx, 1)
+      }
       musicNodes.push(osc)
     })
   })
@@ -197,6 +209,8 @@ export function stopMusic(): void {
   const gainToFade = musicGain
   musicNodes = []
   musicGain = null
+  musicGainNodes.forEach((g) => { try { g.disconnect() } catch { /* ignore */ } })
+  musicGainNodes = []
 
   if (c && gainToFade) {
     gainToFade.gain.setValueAtTime(gainToFade.gain.value, c.currentTime)
