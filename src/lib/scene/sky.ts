@@ -156,9 +156,9 @@ export function applyDayNight(
     : undefined
 
   const dayBg = new THREE.Color(0x87ceeb)
-  const nightBg = new THREE.Color(0x060810)
+  const nightBg = new THREE.Color(0x0d1422)
   const dayFog = new THREE.Color(0xb0d8f0)
-  const nightFog = new THREE.Color(0x0c1018)
+  const nightFog = new THREE.Color(0x131a28)
 
   const tick = setInterval(() => {
     const p = Math.min(1, (Date.now() - start) / dur)
@@ -171,7 +171,7 @@ export function applyDayNight(
       ;(sky.stars.material as THREE.PointsMaterial).opacity = 0.9 * (1 - ep)
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - ep)
       ;(sky.moonGlow.material as THREE.MeshBasicMaterial).opacity = 0.18 * (1 - ep)
-      lights.moonPoint.intensity = 2.5 * (1 - ep)
+      lights.moonPoint.intensity = 4.0 * (1 - ep)
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.8
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = ep * 0.3
       sky.clouds.forEach((cg) =>
@@ -179,11 +179,11 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = ep * 0.88,
         ),
       )
-      lights.moon.intensity = 2.4 * (1 - ep)
+      lights.moon.intensity = 3.4 * (1 - ep)
       lights.sun.intensity = ep * 2.2
-      lights.hemi.color.set(0x223366).lerp(new THREE.Color(0x88bbff), ep)
-      lights.hemi.groundColor.set(0x1a1006).lerp(new THREE.Color(0x6a8040), ep)
-      lights.hemi.intensity = 0.75 + ep * 0.5
+      lights.hemi.color.set(0x2a3d6a).lerp(new THREE.Color(0x88bbff), ep)
+      lights.hemi.groundColor.set(0x1e1a10).lerp(new THREE.Color(0x6a8040), ep)
+      lights.hemi.intensity = 1.1 + ep * 0.5
     } else {
       scene.background = dayBg.clone().lerp(nightBg, ep)
       if (scene.fog instanceof THREE.FogExp2)
@@ -191,7 +191,7 @@ export function applyDayNight(
       ;(sky.stars.material as THREE.PointsMaterial).opacity = ep * 0.9
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.55
       ;(sky.moonGlow.material as THREE.MeshBasicMaterial).opacity = ep * 0.18
-      lights.moonPoint.intensity = ep * 2.5
+      lights.moonPoint.intensity = ep * 4.0
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = 0.8 * (1 - ep)
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = 0.3 * (1 - ep)
       sky.clouds.forEach((cg) =>
@@ -199,11 +199,11 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = 0.88 * (1 - ep),
         ),
       )
-      lights.moon.intensity = ep * 2.4
+      lights.moon.intensity = ep * 3.4
       lights.sun.intensity = 0.85 * (1 - ep) * 0.3
-      lights.hemi.color.set(0x88bbff).lerp(new THREE.Color(0x223366), ep)
-      lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1a1006), ep)
-      lights.hemi.intensity = 1.25 - ep * 0.5
+      lights.hemi.color.set(0x88bbff).lerp(new THREE.Color(0x2a3d6a), ep)
+      lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1e1a10), ep)
+      lights.hemi.intensity = 1.25 - ep * 0.15
     }
 
     // Sign board glow — fades in at night so text stays readable
