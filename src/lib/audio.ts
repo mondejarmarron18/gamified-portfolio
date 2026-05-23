@@ -195,6 +195,14 @@ function playMelodyAccent(musicGainNode: GainNode): void {
       musicNodes.push(osc)
     })
   })
+
+  // Prune accentGain from musicGainNodes once the phrase is fully done
+  const phraseDurationMs = (MELODY_NOTES.length - 1) * 500 + 720 // last note + 0.62s stop + buffer
+  setTimeout(() => {
+    try { accentGain.disconnect() } catch { /* ignore */ }
+    const idx = musicGainNodes.indexOf(accentGain)
+    if (idx !== -1) musicGainNodes.splice(idx, 1)
+  }, phraseDurationMs)
 }
 
 export function stopMusic(): void {
