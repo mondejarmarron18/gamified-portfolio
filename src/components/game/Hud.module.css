@@ -14,7 +14,7 @@
 .staminaFill { height: 100%; background: linear-gradient(90deg, #ff6b1a, #ffcc44); border-radius: 3px; transition: width .25s; box-shadow: 0 0 5px #ff6b1a; }
 
 .fpsCounter {
-  position: absolute; bottom: 10px; right: 16px;
+  position: absolute; bottom: max(10px, env(safe-area-inset-bottom, 10px)); right: 16px;
   background: rgba(6,4,1,.88); border: 1px solid rgba(201,144,58,.4);
   border-radius: 6px; padding: 4px 10px;
   font-family: 'Cinzel', serif; font-size: .78rem; font-weight: 700;
@@ -36,7 +36,7 @@
 
 
 .controls {
-  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: max(16px, env(safe-area-inset-bottom, 16px)); left: 50%; transform: translateX(-50%);
   display: flex; gap: 6px; align-items: center;
   background: rgba(6,4,1,.9); border: 1px solid rgba(201,144,58,.55);
   border-radius: 8px; padding: 6px 14px; font-size: .62rem; color: #7a6040;
@@ -47,7 +47,7 @@
 .sep { opacity: .35; margin: 0 4px; }
 
 .touchHint {
-  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: max(16px, env(safe-area-inset-bottom, 16px)); left: 50%; transform: translateX(-50%);
   background: rgba(6,4,1,.9); border: 1px solid rgba(201,144,58,.55);
   border-radius: 8px; padding: 6px 14px; font-size: .62rem; color: #7a6040;
   backdrop-filter: blur(8px); white-space: nowrap;
@@ -64,7 +64,7 @@
 
 /* ── Gear settings button ───────────────────────────────── */
 .gearBtn {
-  position: absolute; bottom: 10px; left: 10px;
+  position: absolute; bottom: max(10px, env(safe-area-inset-bottom, 10px)); left: 10px;
   width: 34px; height: 34px; border-radius: 50%;
   background: rgba(6,4,1,.92); border: 1px solid rgba(201,144,58,.55);
   display: flex; align-items: center; justify-content: center;
@@ -76,7 +76,7 @@
 
 /* ── Settings panel ─────────────────────────────────────── */
 .settingsPanel {
-  position: absolute; bottom: 52px; left: 10px;
+  position: absolute; bottom: max(52px, calc(env(safe-area-inset-bottom, 0px) + 42px)); left: 10px;
   background: rgba(8,5,1,.97); border: 1px solid rgba(201,144,58,.5);
   border-radius: 10px; padding: 10px 14px; min-width: 210px;
   backdrop-filter: blur(14px); pointer-events: all; z-index: 16;

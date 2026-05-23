@@ -2,6 +2,7 @@
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* dynamic viewport height — shrinks when mobile browser chrome appears */
   overflow: hidden;
   background: #060810;
 }
@@ -22,6 +23,10 @@
   justify-content: center;
   z-index: 100;
   font-family: 'Crimson Text', serif;
+  padding: 1.5rem 1.5rem env(safe-area-inset-bottom, 1.5rem);
+  box-sizing: border-box;
+  overflow-y: auto;
+  text-align: center;
 }
 
 .introEmoji {
@@ -53,6 +58,7 @@
   margin-top: .5rem;
   letter-spacing: .2em;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .introDivider {
