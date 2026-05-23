@@ -7,8 +7,8 @@ let musicGain: GainNode | null = null    // music bus — volume controlled by s
 let sfxGain: GainNode | null = null      // sfx bus — volume controlled by setSfxVolume
 let musicSource: AudioBufferSourceNode | null = null
 let walkTimer: ReturnType<typeof setInterval> | null = null
-let _musicVolume = 0.7
-let _sfxVolume = 0.8
+let _musicVolume = 0.3
+let _sfxVolume = 0.7
 let _musicLoading: Promise<void> | null = null
 
 // ── Internal helpers ─────────────────────────────────────────

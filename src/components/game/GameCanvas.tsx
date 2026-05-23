@@ -68,8 +68,8 @@ export function GameCanvas() {
   const camThetaVelRef = useRef(0)
   const campfireActiveRef = useRef(false)
   const wasWalkingRef = useRef(false)
-  const [musicVolume, setMusicVolumeState] = useState(0.7)
-  const [sfxVolume, setSfxVolumeState] = useState(0.8)
+  const [musicVolume, setMusicVolumeState] = useState(0.3)
+  const [sfxVolume, setSfxVolumeState] = useState(0.7)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
@@ -181,6 +181,26 @@ export function GameCanvas() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Unified touch tap: walk on ground, interact on objects.
+  // On mobile there is no right-click, so a single tap covers both actions.
+  const handleTap = useCallback((clientX: number, clientY: number) => {
+    const refs = sceneRefsRef.current
+    const targets = getRaycastTargets()
+    if (!refs || !targets) return
+    const hit = castRay(clientX, clientY, refs.camera, refs.renderer, targets)
+    if (!hit) return
+    if (hit.type === 'ground') {
+      const { setTarget, setWalking } = useGameStore.getState()
+      setTarget(hit.point)
+      setWalking(true)
+      showWalkMarker(clientX, clientY)
+      return
+    }
+    // All object hits go through the interact handler
+    handleInteract(clientX, clientY)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleInteract])
+
   const handleMouseMove = useCallback((clientX: number, clientY: number) => {
     const refs = sceneRefsRef.current
     const targets = getRaycastTargets()
@@ -201,7 +221,7 @@ export function GameCanvas() {
     onWheel: (deltaY) => useGameStore.getState().setCamDist(
       Math.max(4, Math.min(18, getState().camDist + deltaY * 0.015)),
     ),
-    onTap: handleInteract,
+    onTap: handleTap,
     onPinchDelta: (delta) => useGameStore.getState().setCamDist(
       Math.max(4, Math.min(22, getState().camDist - delta * 0.022)),
     ),
@@ -439,7 +459,7 @@ export function GameCanvas() {
           We forge intelligent systems — from full-stack apps to AI-driven automation.<br />
           Explore the island. Uncover the work. Discover what's possible.
         </p>
-        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.7); setSfxVolume(0.8) }}>
+        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.3); setSfxVolume(0.7) }}>
           ⚒ Explore My Work
         </button>
       </div>
