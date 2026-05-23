@@ -69,8 +69,8 @@ export function GameCanvas() {
   const camThetaVelRef = useRef(0)
   const campfireActiveRef = useRef(false)
   const wasWalkingRef = useRef(false)
-  const [musicVolume, setMusicVolumeState] = useState(0.3)
-  const [sfxVolume, setSfxVolumeState] = useState(0.7)
+  const [musicVolume, setMusicVolumeState] = useState(0.2)
+  const [sfxVolume, setSfxVolumeState] = useState(0.8)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
@@ -468,7 +468,7 @@ export function GameCanvas() {
           I forge intelligent systems — from full-stack apps to AI-driven automation.<br />
           Explore the island. Uncover the work. Discover what's possible.
         </p>
-        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.3); setSfxVolume(0.7) }}>
+        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.2); setSfxVolume(0.8) }}>
           ⚒ Explore My Work
         </button>
         <p className={styles.introNote}>🎵 Background music &amp; sound effects will play — adjust in ⚙ Settings</p>
