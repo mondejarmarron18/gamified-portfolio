@@ -14,7 +14,7 @@ export const projects: Project[] = [
     gem: '📅',
     name: 'Eventra',
     type: 'Full-Stack · SaaS',
-    desc: 'Event & resource management platform with role-based access control, event registration, payment processing, resource management, audit logging, and public APIs — built on a scalable monorepo.',
+    desc: 'Multitenant Event & resource management platform with role-based access control, event registration, payment processing, resource management, audit logging, and public APIs — built on a scalable monorepo.',
     tags: ['Bun', 'Hono', 'React', 'TypeScript', 'PostgreSQL', 'Docker'],
   },
   {
@@ -54,7 +54,7 @@ export const projects: Project[] = [
     gem: '✈️',
     name: 'Airfi Marketing Site',
     type: 'Marketing · Frontend',
-    desc: 'Interactive marketing website with smooth animations for a UK-based inflight WiFi network company.',
+    desc: 'Interactive marketing website with smooth animations for a UK-based company.',
     tags: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'TypeScript'],
   },
 ]

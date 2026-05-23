@@ -16,8 +16,7 @@ interface Props {
   hintLabels: HintLabel[]
   isMobile: boolean
   fps: number
-  qualityMode: 'auto' | 'high' | 'low'
-  effectiveQuality: 'high' | 'low'
+  qualityMode: 'high' | 'low'
   onCycleQuality: () => void
   musicVolume: number
   sfxVolume: number
@@ -25,14 +24,11 @@ interface Props {
   onSfxVolumeChange: (v: number) => void
 }
 
-export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange }: Props) {
+export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, onCycleQuality, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange }: Props) {
   const stamina = useGameStore((s) => s.stamina)
   const discovered = useGameStore((s) => s.discovered)
 
-  const qualityLabel =
-    qualityMode === 'high' ? '✨ Quality' :
-    qualityMode === 'low'  ? '🔋 Performance' :
-    '⚙ Auto'
+  const qualityLabel = qualityMode === 'high' ? '✨ Quality' : '🔋 Performance'
 
   const [settingsOpen, setSettingsOpen] = useState(false)
 
@@ -101,11 +97,6 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
             <span className={styles.settingsPanelLabel}>✨ Quality</span>
             <button className={styles.settingsPillBtn} onClick={onCycleQuality}>
               {qualityLabel}
-              {qualityMode === 'auto' && (
-                <span className={styles.settingsPanelSub}>
-                  {effectiveQuality === 'high' ? ' ▲' : ' ▼'}
-                </span>
-              )}
             </button>
           </div>
 
@@ -120,6 +111,7 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
               onChange={(e) => onMusicVolumeChange(parseFloat(e.target.value))}
               className={styles.volSlider}
               aria-label="Music volume"
+              style={{ '--vol': `${Math.round(musicVolume * 100)}%` } as React.CSSProperties}
             />
           </div>
 
@@ -134,6 +126,7 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
               onChange={(e) => onSfxVolumeChange(parseFloat(e.target.value))}
               className={styles.volSlider}
               aria-label="Effects volume"
+              style={{ '--vol': `${Math.round(sfxVolume * 100)}%` } as React.CSSProperties}
             />
           </div>
         </div>

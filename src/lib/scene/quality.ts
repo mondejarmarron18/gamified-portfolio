@@ -22,12 +22,18 @@ export function applyQuality(refs: QualityRefs, q: 'high' | 'low'): void {
   refs.flowerGroups.forEach((g) => { g.visible = !isLow })
   refs.butterflies.forEach((g) => { g.visible = !isLow })
   refs.rabbitGroups.forEach((g) => { g.visible = !isLow })
-  // Hide every other tree in low mode; disable shadow casting on all trees for performance
+  // Hide every other tree in low mode
   refs.treeGroups.forEach((g, i) => {
     g.visible = !isLow || i % 2 !== 0
-    g.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) (child as THREE.Mesh).castShadow = !isLow
-    })
+  })
+
+  // Disable/enable castShadow on ALL scene meshes for the target quality.
+  // In high mode this restores each mesh's initialized state (true for most objects).
+  // In low mode this ensures zero shadow computation regardless of renderer.shadowMap.enabled.
+  refs.scene.traverse((obj) => {
+    if ((obj as THREE.Mesh).isMesh) {
+      (obj as THREE.Mesh).castShadow = !isLow
+    }
   })
 
   refs.renderer.shadowMap.enabled = !isLow

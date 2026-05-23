@@ -411,50 +411,51 @@ export function buildScroll(scene: THREE.Scene, scrollPos: Vec2): THREE.Group {
   const parchTex = new THREE.CanvasTexture(pCan)
   const faceMat = new THREE.MeshStandardMaterial({ map: parchTex, roughness: 0.88, metalness: 0.01 })
 
-  // Slightly wavy/curled flat geometry (natural unrolled look)
-  const flatGeo = new THREE.PlaneGeometry(1.3, 1.05, 10, 12)
+  // Partially-unrolled flat parchment — wider than before so more of the scroll is visible
+  // Flat extends z: 0.14 → 1.64 (length 1.5, center at 0.89)
+  const flatGeo = new THREE.PlaneGeometry(1.3, 1.5, 10, 16)
   const fPos = flatGeo.attributes['position'] as THREE.BufferAttribute
   for (let i = 0; i < fPos.count; i++) {
     const fx = fPos.getX(i)
     const fy = fPos.getY(i)
-    // Slight curl at top edge (near roll) and gentle side waves
-    const tNorm = (fy + 0.525) / 1.05
-    const z = Math.sin(tNorm * Math.PI * 0.25) * 0.035 + Math.abs(fx / 0.65) * 0.018 * (1 - tNorm)
+    // Curl at top edge (near roll) and gentle side waves
+    const tNorm = (fy + 0.75) / 1.5
+    const z = Math.sin(tNorm * Math.PI * 0.25) * 0.04 + Math.abs(fx / 0.65) * 0.02 * (1 - tNorm)
     fPos.setZ(i, z)
   }
   flatGeo.computeVertexNormals()
 
   const flat = new THREE.Mesh(flatGeo, faceMat)
   flat.rotation.x = -Math.PI / 2
-  flat.position.set(0, 0.014, 0.665)
+  flat.position.set(0, 0.014, 0.89)
   flat.castShadow = true; flat.receiveShadow = true
   scrollGroup.add(flat)
 
   const flatBack = new THREE.Mesh(flatGeo.clone(), backMat)
   flatBack.rotation.x = -Math.PI / 2
-  flatBack.position.set(0, 0.01, 0.665)
+  flatBack.position.set(0, 0.01, 0.89)
   scrollGroup.add(flatBack)
 
-  // ── Wax seal ──────────────────────────────────────────────────────────────
+  // ── Wax seal — moved further along the parchment ──────────────────────────
   const seal = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.032, 16), sealMat)
-  seal.position.set(0, 0.032, 0.85)
+  seal.position.set(0, 0.032, 1.20)
   seal.castShadow = true
   scrollGroup.add(seal)
 
   const sealTop = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.038, 8), sealTopMat)
-  sealTop.position.set(0, 0.05, 0.85)
+  sealTop.position.set(0, 0.05, 1.20)
   scrollGroup.add(sealTop)
 
-  // Ribbon strips from roll to seal
+  // Ribbon strips from roll to seal (longer to match new seal position)
   ;[-0.09, 0.09].forEach((xo) => {
-    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.009, 0.56), ribbonMat)
-    rib.position.set(xo, 0.022, 0.44)
+    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.009, 0.82), ribbonMat)
+    rib.position.set(xo, 0.022, 0.64)
     scrollGroup.add(rib)
   })
 
   // ── Glow ──────────────────────────────────────────────────────────────────
   const gl = new THREE.PointLight(0xffcc44, 0.6, 3.5)
-  gl.position.set(0, 0.6, 0.5)
+  gl.position.set(0, 0.6, 0.7)
   scrollGroup.add(gl)
 
   scrollGroup.userData['type'] = 'scroll'

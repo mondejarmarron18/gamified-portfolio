@@ -17,7 +17,7 @@ interface GameActions {
   setIntroZoom: (v: boolean) => void
   setIntroZoomDist: (dist: number) => void
   openChest: () => void
-  setQualityMode: (mode: 'auto' | 'high' | 'low') => void
+  setQualityMode: (mode: 'high' | 'low') => void
   setEffectiveQuality: (q: 'high' | 'low') => void
 }
 
@@ -43,7 +43,7 @@ const initialState: GameState = {
   chestPos: { x: 8, z: 3 },
   scrollPos: { x: 0, z: 6 },
   chestOpen: false,
-  qualityMode: 'auto',
+  qualityMode: 'high',
   effectiveQuality: 'high',
 }
 

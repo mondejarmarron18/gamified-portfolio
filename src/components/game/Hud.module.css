@@ -122,10 +122,8 @@
 .volSlider {
   -webkit-appearance: none; appearance: none;
   width: 88px; height: 4px; border-radius: 2px; outline: none;
-  background: linear-gradient(90deg, #f0c060, #f0c060) no-repeat,
-              #2a1a08;
-  background-size: 70% 100%;
-  cursor: pointer; pointer-events: all; transition: background-size .1s;
+  background: linear-gradient(90deg, #f0c060 var(--vol, 70%), #2a1a08 var(--vol, 70%));
+  cursor: pointer; pointer-events: all;
 }
 .volSlider::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
