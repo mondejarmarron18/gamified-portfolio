@@ -257,7 +257,7 @@ export function buildTrees(scene: THREE.Scene, tex: SceneTextures): THREE.Group[
 export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
   const groups: THREE.Group[] = []
   const flowerColors = [0xff1493, 0xff69b4, 0xff1493, 0xff69b4, 0xff1493, 0xee1177]
-  for (let i = 0; i < 55; i++) {
+  for (let i = 0; i < 130; i++) {
     let fx: number, fz: number, fr: number
     do {
       fx = (Math.random() - 0.5) * 28
@@ -271,22 +271,22 @@ export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
     const stemMat   = new THREE.MeshStandardMaterial({ color: 0x3a7010, roughness: 0.95 })
     const centerMat = new THREE.MeshStandardMaterial({ color: 0xffee44, roughness: 0.8 })
 
-    const stemH = 0.07 + Math.random() * 0.05
-    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.006, stemH, 5), stemMat)
+    const stemH = 0.13 + Math.random() * 0.09
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.009, stemH, 5), stemMat)
     stem.position.y = stemH * 0.5
     g.add(stem)
 
     for (let p = 0; p < 5; p++) {
       const angle = (p / 5) * Math.PI * 2
-      const petal = new THREE.Mesh(new THREE.SphereGeometry(0.018, 5, 3), petalMat)
-      petal.scale.set(1, 0.35, 1.6)
-      petal.position.set(Math.cos(angle) * 0.020, stemH + 0.003, Math.sin(angle) * 0.020)
+      const petal = new THREE.Mesh(new THREE.SphereGeometry(0.032, 5, 3), petalMat)
+      petal.scale.set(1, 0.38, 1.8)
+      petal.position.set(Math.cos(angle) * 0.036, stemH + 0.005, Math.sin(angle) * 0.036)
       petal.rotation.y = angle
       g.add(petal)
     }
 
-    const center = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.007, 7), centerMat)
-    center.position.y = stemH + 0.004
+    const center = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.010, 7), centerMat)
+    center.position.y = stemH + 0.006
     g.add(center)
 
     g.position.set(fx, 0, fz)
