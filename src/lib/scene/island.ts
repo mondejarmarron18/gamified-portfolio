@@ -31,7 +31,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
   geo.computeVertexNormals()
   const rockBase = new THREE.Mesh(
     geo,
-    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x8a9aaa, roughness: 0.40, metalness: 0.70 }),
+    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x5a5448, roughness: 0.95, metalness: 0.06 }),
   )
   rockBase.position.y = -1.5
   rockBase.receiveShadow = true
@@ -107,7 +107,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
     cg.computeVertexNormals()
     const cm = new THREE.Mesh(
       cg,
-      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x7a8a9a, roughness: 0.42, metalness: 0.68 }),
+      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x4a4038, roughness: 0.95, metalness: 0.08 }),
     )
     cm.position.set(
       Math.cos(a) * r,
@@ -299,9 +299,9 @@ export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {
       geo,
       new THREE.MeshStandardMaterial({
         map: tex.rock,
-        color: new THREE.Color().setHSL(0.58 + Math.random() * 0.06, 0.12, 0.52 + Math.random() * 0.14),
-        roughness: 0.38,
-        metalness: 0.72,
+        color: new THREE.Color().setHSL(0.06 + Math.random() * 0.04, 0.18, 0.30 + Math.random() * 0.12),
+        roughness: 0.94,
+        metalness: 0.08,
       }),
     )
     m.position.set(
@@ -330,7 +330,7 @@ export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {
     geo.computeVertexNormals()
     const m = new THREE.Mesh(
       geo,
-      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x6a7a8a, roughness: 0.36, metalness: 0.75 }),
+      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x3a3028, roughness: 0.97, metalness: 0.04 }),
     )
     const a = (i / 10) * Math.PI * 2
     const r = 13 + Math.random() * 2.5
