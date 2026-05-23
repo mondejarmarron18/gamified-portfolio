@@ -64,7 +64,7 @@ export function buildCampfire(scene: THREE.Scene): THREE.PointLight {
   scene.add(g)
 
   // Point light for the campfire glow
-  const light = new THREE.PointLight(0xff7722, 0, 22)  // intensity 0 until night
+  const light = new THREE.PointLight(0xff6600, 0, 35)  // intensity 0 until night; distance 35 for wide glow
   light.position.set(0, 1.2, 0)
   light.castShadow = false
   light.name = 'campfireLight'

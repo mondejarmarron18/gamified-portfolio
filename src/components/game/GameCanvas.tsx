@@ -389,7 +389,7 @@ export function GameCanvas() {
       // Campfire flicker — only when night is fully active (not during transition)
       const campfireLight = refs.scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
       if (campfireLight && campfireActiveRef.current)
-        campfireLight.intensity = 4.5 + Math.sin(elapsed * 7.3) * 0.6 + Math.sin(elapsed * 13.7) * 0.3
+        campfireLight.intensity = 8.5 + Math.sin(elapsed * 7.3) * 1.2 + Math.sin(elapsed * 13.7) * 0.6
 
       // Skip butterfly animation when hidden (low quality)
       const { effectiveQuality } = gs
@@ -471,6 +471,7 @@ export function GameCanvas() {
         <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.3); setSfxVolume(0.7) }}>
           ⚒ Explore My Work
         </button>
+        <p className={styles.introNote}>🎵 Background music &amp; sound effects will play — adjust in ⚙ Settings</p>
       </div>
     )
   }
