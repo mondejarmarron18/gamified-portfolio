@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import styles from './Hud.module.css'
 import { useGameStore } from '@/lib/state'
 
@@ -31,6 +32,21 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
     qualityMode === 'low'  ? '🔋 Performance' :
     '⚙ Auto'
 
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  useEffect(() => {
+    if (!settingsOpen) return
+    const handler = (e: MouseEvent) => {
+      const panel = document.querySelector('[data-settings-panel]')
+      const gear  = document.querySelector('[data-gear-btn]')
+      if (!panel?.contains(e.target as Node) && !gear?.contains(e.target as Node)) {
+        setSettingsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [settingsOpen])
+
   return (
     <div className={styles.hud}>
       <div className={styles.topLeft}>
@@ -53,22 +69,55 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
         <div className={styles.discCount}>{discovered} / 3</div>
       </div>
 
-      <div className={styles.centerBtns}>
-        <button className={styles.dayNightBtn} onClick={onToggleDayNight}>
-          {isDay ? '🌙 Evening' : '🌅 Morning'}
-        </button>
-        <button className={styles.qualityBtn} onClick={onCycleQuality}>
-          {qualityLabel}
-          {qualityMode === 'auto' && (
-            <span className={styles.qualityAuto}>
-              {effectiveQuality === 'high' ? '▲ high' : '▼ low'}
+      {/* Gear settings button — bottom-left anchor */}
+      <button
+        data-gear-btn
+        className={styles.gearBtn}
+        onClick={() => setSettingsOpen((v) => !v)}
+        title="Settings"
+      >
+        ⚙
+      </button>
+
+      {/* Settings panel — slides up from gear */}
+      {settingsOpen && (
+        <div data-settings-panel className={styles.settingsPanel}>
+          <div className={styles.settingsPanelTitle}>⚙ Settings</div>
+
+          <div className={styles.settingsPanelRow}>
+            <span className={styles.settingsPanelLabel}>
+              {isDay ? '🌙' : '🌅'} Time of Day
             </span>
-          )}
-        </button>
-        <button className={styles.audioBtn} onClick={onToggleAudio} title={audioEnabled ? 'Mute audio' : 'Unmute audio'}>
-          {audioEnabled ? '🔊' : '🔇'}
-        </button>
-      </div>
+            <button className={styles.settingsPillBtn} onClick={onToggleDayNight}>
+              {isDay ? 'Evening' : 'Morning'}
+            </button>
+          </div>
+
+          <div className={styles.settingsPanelRow}>
+            <span className={styles.settingsPanelLabel}>✨ Quality</span>
+            <button className={styles.settingsPillBtn} onClick={onCycleQuality}>
+              {qualityLabel}
+              {qualityMode === 'auto' && (
+                <span className={styles.settingsPanelSub}>
+                  {effectiveQuality === 'high' ? ' ▲' : ' ▼'}
+                </span>
+              )}
+            </button>
+          </div>
+
+          <div className={styles.settingsPanelRow}>
+            <span className={styles.settingsPanelLabel}>🔊 Music</span>
+            <div
+              className={`${styles.settingsToggle} ${audioEnabled ? styles.settingsToggleOn : ''}`}
+              onClick={onToggleAudio}
+              role="switch"
+              aria-checked={audioEnabled}
+            >
+              <div className={styles.settingsToggleDot} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {!isMobile ? (
         <div className={styles.controls}>
