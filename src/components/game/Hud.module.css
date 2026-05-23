@@ -14,7 +14,7 @@
 .staminaFill { height: 100%; background: linear-gradient(90deg, #ff6b1a, #ffcc44); border-radius: 3px; transition: width .25s; box-shadow: 0 0 5px #ff6b1a; }
 
 .fpsCounter {
-  position: absolute; bottom: 52px; right: 16px;
+  position: absolute; bottom: 10px; right: 16px;
   background: rgba(6,4,1,.88); border: 1px solid rgba(201,144,58,.4);
   border-radius: 6px; padding: 4px 10px;
   font-family: 'Cinzel', serif; font-size: .78rem; font-weight: 700;
@@ -78,7 +78,7 @@
 .settingsPanel {
   position: absolute; bottom: 52px; left: 10px;
   background: rgba(8,5,1,.97); border: 1px solid rgba(201,144,58,.5);
-  border-radius: 10px; padding: 10px 14px; min-width: 178px;
+  border-radius: 10px; padding: 10px 14px; min-width: 210px;
   backdrop-filter: blur(14px); pointer-events: all; z-index: 16;
   box-shadow: 0 8px 32px rgba(0,0,0,.8), 0 0 20px rgba(255,107,26,.1);
   animation: panelSlideUp .2s ease;
@@ -89,7 +89,7 @@
 }
 
 .settingsPanelTitle {
-  font-family: 'Cinzel', serif; font-size: .54rem; color: #7a5a20;
+  font-family: 'Cinzel', serif; font-size: .72rem; color: #7a5a20;
   letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px;
   padding-bottom: 6px; border-bottom: 1px solid rgba(201,144,58,.2);
 }
@@ -102,7 +102,7 @@
 .settingsPanelRow:last-child { border-bottom: none; }
 
 .settingsPanelLabel {
-  font-size: .58rem; color: #c0a050; white-space: nowrap;
+  font-size: .76rem; color: #c0a050; white-space: nowrap;
 }
 
 .settingsPanelSub {
@@ -110,26 +110,34 @@
 }
 
 .settingsPillBtn {
-  font-size: .54rem; font-family: 'Cinzel', serif; color: #f0c060;
+  font-size: .7rem; font-family: 'Cinzel', serif; color: #f0c060;
   background: rgba(201,144,58,.12); border: 1px solid rgba(201,144,58,.35);
-  border-radius: 10px; padding: 2px 9px; cursor: pointer; pointer-events: all;
+  border-radius: 10px; padding: 3px 11px; cursor: pointer; pointer-events: all;
   white-space: nowrap; transition: all .2s;
 }
 .settingsPillBtn:hover { border-color: #f0c060; background: rgba(201,144,58,.2); }
 
-/* Toggle switch */
-.settingsToggle {
-  width: 38px; height: 20px; border-radius: 10px; flex-shrink: 0;
-  background: #2a1a10; border: 1px solid #4a2a18;
-  position: relative; cursor: pointer; pointer-events: all; transition: all .25s;
+
+/* ── Volume sliders ─────────────────────────────────────────── */
+.volSlider {
+  -webkit-appearance: none; appearance: none;
+  width: 88px; height: 4px; border-radius: 2px; outline: none;
+  background: linear-gradient(90deg, #f0c060, #f0c060) no-repeat,
+              #2a1a08;
+  background-size: 70% 100%;
+  cursor: pointer; pointer-events: all; transition: background-size .1s;
 }
-.settingsToggleOn {
-  background: #1a4a18; border-color: #3a7a30;
+.volSlider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #f0c060; border: 2px solid #c07820;
+  box-shadow: 0 0 6px rgba(255,160,40,.5);
+  cursor: pointer;
 }
-.settingsToggleDot {
-  position: absolute; top: 3px; left: 3px; width: 12px; height: 12px;
-  border-radius: 50%; background: #6a4020; transition: all .25s;
+.volSlider::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #f0c060; border: 2px solid #c07820;
+  box-shadow: 0 0 6px rgba(255,160,40,.5);
+  cursor: pointer;
 }
-.settingsToggleOn .settingsToggleDot {
-  left: 21px; background: #66dd66;
-}
+.volSlider:focus-visible { outline: 2px solid #f0c060; outline-offset: 3px; }
