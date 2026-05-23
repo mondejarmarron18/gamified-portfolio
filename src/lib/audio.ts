@@ -9,6 +9,7 @@ let musicSource: AudioBufferSourceNode | null = null
 let walkTimer: ReturnType<typeof setInterval> | null = null
 let _musicVolume = 0.7
 let _sfxVolume = 0.8
+let _musicLoading: Promise<void> | null = null
 
 // ── Internal helpers ─────────────────────────────────────────
 
@@ -57,14 +58,21 @@ function getSfxBus(): GainNode | null {
 // ── Music ────────────────────────────────────────────────────
 
 async function startMusic(): Promise<void> {
+  if (musicSource || _musicLoading) return _musicLoading ?? undefined
+  _musicLoading = _doStartMusic().finally(() => { _musicLoading = null })
+  return _musicLoading
+}
+
+async function _doStartMusic(): Promise<void> {
   const c = getCtx()
   const bus = getMusicBus()
-  if (!c || !bus || musicSource) return
+  if (!c || !bus) return
   try {
     const res = await fetch('/assets/audios/background.mp3')
+    if (!res.ok) throw new Error(`[audio] HTTP ${res.status} fetching background.mp3`)
     const buf = await res.arrayBuffer()
     const decoded = await c.decodeAudioData(buf)
-    if (musicSource) return // guard against double-fetch race
+    if (musicSource) return // guard against race
     const src = c.createBufferSource()
     src.buffer = decoded
     src.loop = true
@@ -233,6 +241,7 @@ export function playModalOpen(): void {
 export function cleanupAudio(): void {
   stopMusic()
   stopWalkSound()
+  _musicLoading = null
   if (ctx) {
     void ctx.close()
     ctx = null
