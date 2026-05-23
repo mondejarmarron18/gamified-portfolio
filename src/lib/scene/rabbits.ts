@@ -9,12 +9,49 @@ function getHeartTex(): THREE.Texture {
   c.width = 64; c.height = 64
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const ctx = c.getContext('2d')!
-  ctx.font = '48px serif'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText('❤', 32, 36)
+
+  // Draw a bright-red heart using bezier curves — guaranteed colour on all platforms
+  ctx.fillStyle = '#ff1133'
+  const cx = 32, cy = 26, s = 16
+  ctx.beginPath()
+  ctx.moveTo(cx, cy + s * 0.4)
+  // right lobe
+  ctx.bezierCurveTo(cx + s * 0.1, cy - s * 0.15, cx + s * 1.2, cy - s * 0.15, cx + s * 1.2, cy + s * 0.45)
+  ctx.bezierCurveTo(cx + s * 1.2, cy + s * 1.0, cx + s * 0.6, cy + s * 1.4, cx, cy + s * 1.9)
+  // left lobe (mirror)
+  ctx.bezierCurveTo(cx - s * 0.6, cy + s * 1.4, cx - s * 1.2, cy + s * 1.0, cx - s * 1.2, cy + s * 0.45)
+  ctx.bezierCurveTo(cx - s * 1.2, cy - s * 0.15, cx - s * 0.1, cy - s * 0.15, cx, cy + s * 0.4)
+  ctx.fill()
+
   _heartTex = new THREE.CanvasTexture(c)
   return _heartTex
+}
+
+// ── World positions to avoid when picking wander targets ──────────────────────
+const AVOID_POS = [
+  { x: -8, z:  3 },  // sign
+  { x:  8, z:  3 },  // chest
+  { x:  0, z:  6 },  // scroll
+  { x: -5, z: -7 },  // rock 1
+  { x:  5, z: -7 },  // rock 2
+  { x:  0, z: -11 }, // gold rock
+]
+const AVOID_R = 3.5  // minimum clearance from any interactive object
+
+/** Pick a wander target relative to the rabbit's current position,
+ *  rejecting candidates that land too close to interactive objects. */
+function pickWanderTarget(r: THREE.Group): { x: number; z: number } {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const angle = Math.random() * Math.PI * 2
+    const radius = 2 + Math.random() * 5
+    const tx = Math.max(-11, Math.min(11, r.position.x + Math.cos(angle) * radius))
+    const tz = Math.max(-11, Math.min(11, r.position.z + Math.sin(angle) * radius))
+    if (!AVOID_POS.some(p => Math.hypot(p.x - tx, p.z - tz) < AVOID_R)) {
+      return { x: tx, z: tz }
+    }
+  }
+  // All attempts collided — stay put
+  return { x: r.position.x, z: r.position.z }
 }
 
 // ── Rabbit mesh builder ───────────────────────────────────────────────────────
@@ -75,11 +112,13 @@ function buildRabbit(): THREE.Group {
 
 // ── Public: spawn all rabbits ─────────────────────────────────────────────────
 export function buildRabbits(scene: THREE.Scene): THREE.Group[] {
-  // Spread far from each other and from the main interactable objects
+  // Loose back-centre triangle — close enough to see each other, clear of all objects
+  //   R1 (-4,-3)  R2 (4,-3)  R3 (0,-6)
+  // Max pair distance ≈ 8 units; all ≥ 4 units from any interactive object
   const startPositions = [
-    { x: -9, z: 8  },   // northwest — away from sign (−8,3)
-    { x: 10, z: -4 },   // east — away from chest (8,3) and rocks
-    { x:  4, z: 11 },   // south — open ground near the front edge
+    { x: -4, z: -3 },
+    { x:  4, z: -3 },
+    { x:  0, z: -6 },
   ]
   return startPositions.map((pos, i) => {
     const r = buildRabbit()
@@ -167,13 +206,10 @@ export function updateRabbits(rabbitGroups: THREE.Group[], dt: number, t: number
       r.scale.y = 1 + Math.sin(t * 8) * 0.04
       ud.petTimer -= dt
       if (ud.petTimer <= 0) {
-        // Flee — pick a random direction away from center
-        const angle = Math.atan2(r.position.z, r.position.x) + Math.PI + (Math.random() - 0.5) * 1.2
-        const dist = 5 + Math.random() * 4
-        const tx = Math.max(-12, Math.min(12, r.position.x + Math.cos(angle) * dist))
-        const tz = Math.max(-12, Math.min(12, r.position.z + Math.sin(angle) * dist))
-        ud.targetX = tx
-        ud.targetZ = tz
+        // Flee — wander away, respecting avoidance zones
+        const t = pickWanderTarget(r)
+        ud.targetX = t.x
+        ud.targetZ = t.z
         ud.state = 'walk'
         ud.stateTimer = 3 + Math.random() * 2
       }
@@ -185,11 +221,9 @@ export function updateRabbits(rabbitGroups: THREE.Group[], dt: number, t: number
     if (ud.state === 'wait') {
       r.scale.y = 1 + Math.sin(t * 2 + ud.hopPhase) * 0.015
       if (ud.stateTimer <= 0) {
-        // Pick a wandering target relative to current position, clamped to island
-        const angle = Math.random() * Math.PI * 2
-        const radius = 2 + Math.random() * 7
-        ud.targetX = Math.max(-12, Math.min(12, r.position.x + Math.cos(angle) * radius))
-        ud.targetZ = Math.max(-12, Math.min(12, r.position.z + Math.sin(angle) * radius))
+        const t = pickWanderTarget(r)
+        ud.targetX = t.x
+        ud.targetZ = t.z
         ud.state = 'walk'
         ud.stateTimer = 2 + Math.random() * 3
       }
