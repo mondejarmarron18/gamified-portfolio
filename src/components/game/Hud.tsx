@@ -19,11 +19,13 @@ interface Props {
   qualityMode: 'auto' | 'high' | 'low'
   effectiveQuality: 'high' | 'low'
   onCycleQuality: () => void
-  audioEnabled: boolean
-  onToggleAudio: () => void
+  musicVolume: number
+  sfxVolume: number
+  onMusicVolumeChange: (v: number) => void
+  onSfxVolumeChange: (v: number) => void
 }
 
-export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality, audioEnabled, onToggleAudio }: Props) {
+export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualityMode, effectiveQuality, onCycleQuality, musicVolume, sfxVolume, onMusicVolumeChange, onSfxVolumeChange }: Props) {
   const stamina = useGameStore((s) => s.stamina)
   const discovered = useGameStore((s) => s.discovered)
 
@@ -108,18 +110,31 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
           </div>
 
           <div className={styles.settingsPanelRow}>
-            <span className={styles.settingsPanelLabel}>🔊 Music</span>
-            <div
-              className={`${styles.settingsToggle} ${audioEnabled ? styles.settingsToggleOn : ''}`}
-              onClick={onToggleAudio}
-              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onToggleAudio() } }}
-              role="switch"
-              aria-checked={audioEnabled}
-              aria-label="Music"
-              tabIndex={0}
-            >
-              <div className={styles.settingsToggleDot} />
-            </div>
+            <span className={styles.settingsPanelLabel}>🎵 Music</span>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={musicVolume}
+              onChange={(e) => onMusicVolumeChange(parseFloat(e.target.value))}
+              className={styles.volSlider}
+              aria-label="Music volume"
+            />
+          </div>
+
+          <div className={styles.settingsPanelRow}>
+            <span className={styles.settingsPanelLabel}>⚡ Effects</span>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={sfxVolume}
+              onChange={(e) => onSfxVolumeChange(parseFloat(e.target.value))}
+              className={styles.volSlider}
+              aria-label="Effects volume"
+            />
           </div>
         </div>
       )}
