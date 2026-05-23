@@ -7,6 +7,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* push card away from notch / home indicator on iOS */
+  padding-top: max(1rem, env(safe-area-inset-top, 1rem));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .card {
@@ -17,10 +22,13 @@
   max-width: 600px;
   width: 93%;
   position: relative;
-  max-height: 92vh;
+  /* svh = small viewport height — the stable size after mobile chrome is shown */
+  max-height: 88vh;
+  max-height: 88svh;
   overflow-y: auto;
   box-shadow: 0 0 60px rgba(255, 107, 26, 0.22), 0 24px 70px rgba(0, 0, 0, 0.7);
   animation: slideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: #c9903a #1a0e04;
