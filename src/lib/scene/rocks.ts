@@ -74,9 +74,9 @@ export function buildRocks(
 
     const rockMat = new THREE.MeshStandardMaterial({
       ...(isGold ? {} : { map: tex.rock }),
-      color: isGold ? 0xc8a828 : 0xd4e0ea,
-      roughness: isGold ? 0.4 : 0.22,
-      metalness: isGold ? 0.85 : 0.88,
+      color: isGold ? 0xc8a828 : 0xeae2d6,
+      roughness: isGold ? 0.4 : 0.52,
+      metalness: isGold ? 0.85 : 0.58,
       flatShading: !isGold,  // flat shading = visible angular facets on the rock
     })
 
@@ -116,9 +116,9 @@ export function buildRocks(
       const m2 = new THREE.Mesh(
         g2,
         new THREE.MeshStandardMaterial({
-          color: isGold ? 0xa88820 : 0xc0ccd8,
-          roughness: isGold ? 0.5 : 0.26,
-          metalness: isGold ? 0.6 : 0.84,
+          color: isGold ? 0xa88820 : 0xddd6ca,
+          roughness: isGold ? 0.5 : 0.55,
+          metalness: isGold ? 0.6 : 0.52,
           flatShading: !isGold,
         }),
       )
@@ -223,13 +223,13 @@ export function explodeRock(scene: THREE.Scene, handles: RockHandles): void {
     sGeo.computeVertexNormals()
     const col = handles.isGold
       ? new THREE.Color(0xf0c030)
-      : new THREE.Color().setHSL(0.58, 0.10, 0.75 + Math.random() * 0.15) // bright silver debris
+      : new THREE.Color().setHSL(0.08, 0.12, 0.78 + Math.random() * 0.14) // warm light stone debris
     const shard = new THREE.Mesh(
       sGeo,
       new THREE.MeshStandardMaterial({
         color: col,
         roughness: handles.isGold ? 0.4 : 0.4,
-        metalness: handles.isGold ? 0.7 : 0.82,
+        metalness: handles.isGold ? 0.7 : 0.55,
       }),
     )
     shard.position.copy(handles.group.position).add(new THREE.Vector3(0, 1, 0))
