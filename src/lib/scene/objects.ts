@@ -84,23 +84,19 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   post.castShadow = true
   signGroup.add(post)
 
+  // ── Colour canvas (albedo) ──────────────────────────────────────────────
   const signCanvas = document.createElement('canvas')
   signCanvas.width = 256
   signCanvas.height = 128
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sCtx = signCanvas.getContext('2d')!
-  // Lighter parchment background so dark text is readable day AND night (with emissive glow)
   sCtx.fillStyle = '#c8842e'
   sCtx.fillRect(0, 0, 256, 128)
   sCtx.strokeStyle = 'rgba(40,20,8,.25)'
   sCtx.lineWidth = 2
   for (let i = 0; i < 6; i++) {
-    sCtx.beginPath()
-    sCtx.moveTo(0, i * 22 + 8)
-    sCtx.lineTo(256, i * 22 + 8)
-    sCtx.stroke()
+    sCtx.beginPath(); sCtx.moveTo(0, i * 22 + 8); sCtx.lineTo(256, i * 22 + 8); sCtx.stroke()
   }
-  // Dark text — visible on the warm/bright emissive surface at night
   sCtx.fillStyle = '#1a0800'
   sCtx.textAlign = 'center'
   sCtx.textBaseline = 'middle'
@@ -109,12 +105,31 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   sCtx.font = '18px serif'
   sCtx.fillStyle = '#2a1000'
   sCtx.fillText('[ Click to Read ]', 128, 88)
-
   const signTex = new THREE.CanvasTexture(signCanvas)
-  // index 4 = front face (+z) — emissive starts at 0, animated to glow at night
+
+  // ── Emissive map: white where background glows, black where text sits ───
+  // This ensures only the background brightens at night; dark text stays dark.
+  const emCanvas = document.createElement('canvas')
+  emCanvas.width = 256
+  emCanvas.height = 128
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const eCtx = emCanvas.getContext('2d')!
+  eCtx.fillStyle = 'white'           // background → full glow
+  eCtx.fillRect(0, 0, 256, 128)
+  eCtx.fillStyle = 'black'           // text area → no glow
+  eCtx.textAlign = 'center'
+  eCtx.textBaseline = 'middle'
+  eCtx.font = 'bold 30px serif'
+  eCtx.fillText('QUEST LOG', 128, 52)
+  eCtx.font = '18px serif'
+  eCtx.fillText('[ Click to Read ]', 128, 88)
+  const emissiveTex = new THREE.CanvasTexture(emCanvas)
+
+  // index 4 = front face (+z) — emissiveIntensity animated 0→1 at night
   const boardFaceMat = new THREE.MeshStandardMaterial({
     map: signTex,
-    emissive: new THREE.Color(0xfff0a0),
+    emissive: new THREE.Color(0xffe890),
+    emissiveMap: emissiveTex,
     emissiveIntensity: 0,
   })
   const boardMats: THREE.Material[] = [
