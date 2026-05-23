@@ -214,20 +214,22 @@ export function stopMusic(): void {
 
   const c = getCtx()
   const nodesToStop = [...musicNodes]
+  const gainNodesToDisconnect = [...musicGainNodes]
   const gainToFade = musicGain
   musicNodes = []
   musicGain = null
-  musicGainNodes.forEach((g) => { try { g.disconnect() } catch { /* ignore */ } })
   musicGainNodes = []
 
   if (c && gainToFade) {
     gainToFade.gain.setValueAtTime(gainToFade.gain.value, c.currentTime)
     gainToFade.gain.linearRampToValueAtTime(0, c.currentTime + 1.5)
     setTimeout(() => {
+      gainNodesToDisconnect.forEach((g) => { try { g.disconnect() } catch { /* ignore */ } })
       nodesToStop.forEach((n) => { try { (n as OscillatorNode).stop() } catch { /* already stopped */ } })
       try { gainToFade.disconnect() } catch { /* ignore */ }
     }, 1600)
   } else {
+    gainNodesToDisconnect.forEach((g) => { try { g.disconnect() } catch { /* ignore */ } })
     nodesToStop.forEach((n) => { try { (n as OscillatorNode).stop() } catch { /* already stopped */ } })
   }
 }
