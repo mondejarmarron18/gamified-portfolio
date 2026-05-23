@@ -123,10 +123,12 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
 
 export function buildGrass(scene: THREE.Scene): THREE.Mesh[] {
   const meshes: THREE.Mesh[] = []
+  // Four layers: dark base, medium, bright, yellow-green accent
   const configs = [
-    { color: 0x3a6418, count: 800, max: 15, min: 2.5 },
-    { color: 0x4a7a22, count: 600, max: 14.5, min: 2 },
-    { color: 0x2d5214, count: 450, max: 15, min: 3 },
+    { color: 0x2a5c10, count: 2200, max: 15,   min: 1.5 },
+    { color: 0x3d7218, count: 2000, max: 14.5,  min: 1.5 },
+    { color: 0x4e8a20, count: 1600, max: 14,    min: 2.0 },
+    { color: 0x5e9c1a, count: 1000, max: 12.5,  min: 2.5 },
   ]
   configs.forEach((cfg) => {
     const verts: number[] = []
@@ -134,6 +136,7 @@ export function buildGrass(scene: THREE.Scene): THREE.Mesh[] {
     const uvs: number[] = []
     const cols: number[] = []
     const col = new THREE.Color(cfg.color)
+
     for (let i = 0; i < cfg.count; i++) {
       let bx: number, bz: number, r: number
       do {
@@ -141,38 +144,54 @@ export function buildGrass(scene: THREE.Scene): THREE.Mesh[] {
         bz = (Math.random() - 0.5) * 32
         r = Math.sqrt(bx * bx + bz * bz)
       } while (r > cfg.max || r < cfg.min)
-      const edgeF = Math.min(1, (r - cfg.min) / (cfg.max - cfg.min))
-      const hgt = (0.25 + Math.random() * 0.4) * (0.5 + edgeF * 0.5)
-      const hw = 0.045 + Math.random() * 0.05
-      const lean = (Math.random() - 0.5) * 0.5
-      const ry = Math.random() * Math.PI * 2
-      const cosRy = Math.cos(ry)
-      const sinRy = Math.sin(ry)
-      const surfH = noise2(bx / 7, bz / 7) * 0.25 * Math.max(0, (r - 5) / 10)
-      const base = verts.length / 3
-      const shade = 0.5 + Math.random() * 0.5
+
+      const edgeF   = Math.min(1, (r - cfg.min) / (cfg.max - cfg.min))
+      const hgt     = (0.18 + Math.random() * 0.48) * (0.4 + edgeF * 0.6)
+      const hw      = 0.028 + Math.random() * 0.038  // base half-width
+      const mw      = hw * 0.40                       // mid half-width (tapers)
+      const lean    = (Math.random() - 0.5) * 0.55   // tip lean
+      const midLean = lean * 0.42                     // mid bend (less than tip)
+      const ry      = Math.random() * Math.PI * 2
+      const cosRy   = Math.cos(ry)
+      const sinRy   = Math.sin(ry)
+      const surfH   = noise2(bx / 7, bz / 7) * 0.25 * Math.max(0, (r - 5) / 10)
+      const shade   = 0.52 + Math.random() * 0.48
+      const base    = verts.length / 3
+
+      // 5-vertex bent blade (2 quads → 3 triangles)
+      // All x coords rotated by ry in world XZ; y is world up
       ;[
-        [-hw, 0, 0],
-        [hw, 0, 0],
-        [lean, hgt, 0],
-      ].forEach((v) => {
-        verts.push(bx + v[0]! * cosRy, v[1]! + surfH + 0.015, bz + v[0]! * sinRy)
+        [-hw,            0,         ],  // v0 base-left
+        [ hw,            0,         ],  // v1 base-right
+        [ midLean + mw,  hgt * 0.52,],  // v2 mid-right
+        [ midLean - mw,  hgt * 0.52,],  // v3 mid-left
+        [ lean,          hgt,       ],  // v4 tip
+      ].forEach(([lx, ly]) => {
+        verts.push(bx + lx! * cosRy, ly! + surfH + 0.012, bz + lx! * sinRy)
         cols.push(col.r * shade, col.g * shade, col.b * shade)
       })
-      uvs.push(0, 0, 1, 0, 0.5, 1)
-      idxs.push(base, base + 1, base + 2)
+
+      uvs.push(0, 0,  1, 0,  1, 0.5,  0, 0.5,  0.5, 1)
+
+      // bottom-left, bottom-right, tip
+      idxs.push(
+        base,     base + 1, base + 3,  // lower-left tri
+        base + 1, base + 2, base + 3,  // lower-right tri
+        base + 3, base + 2, base + 4,  // upper tip tri
+      )
     }
+
     const geo = new THREE.BufferGeometry()
     geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3))
-    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2))
-    geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3))
+    geo.setAttribute('uv',       new THREE.Float32BufferAttribute(uvs,   2))
+    geo.setAttribute('color',    new THREE.Float32BufferAttribute(cols,   3))
     geo.setIndex(idxs)
     geo.computeVertexNormals()
     const mesh = new THREE.Mesh(
       geo,
       new THREE.MeshStandardMaterial({
         vertexColors: true,
-        roughness: 0.9,
+        roughness: 0.88,
         side: THREE.DoubleSide,
         alphaTest: 0.05,
       }),
