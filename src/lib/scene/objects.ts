@@ -78,8 +78,9 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   const woodMat = new THREE.MeshStandardMaterial({ map: tex.wood, color: 0x6a3c18, roughness: 0.92 })
   const ironMat = new THREE.MeshStandardMaterial({ map: tex.metal, color: 0x707880, roughness: 0.45, metalness: 0.85 })
 
-  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 2.2, 8), woodMat)
-  post.position.y = 1.1
+  // Post height 1.65 → top at y=1.65, board bottom at y=1.7 (no overlap)
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 1.65, 8), woodMat)
+  post.position.y = 0.825
   post.castShadow = true
   signGroup.add(post)
 
@@ -108,12 +109,19 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   sCtx.fillText('[ Click to Read ]', 128, 88)
 
   const signTex = new THREE.CanvasTexture(signCanvas)
+  // index 4 = front face (+z) — emissive starts at 0, animated to glow at night
+  const boardFaceMat = new THREE.MeshStandardMaterial({
+    map: signTex,
+    emissive: new THREE.Color(0xfff0a0),
+    emissiveIntensity: 0,
+  })
   const boardMats: THREE.Material[] = [
     woodMat, woodMat, woodMat, woodMat,
-    new THREE.MeshStandardMaterial({ map: signTex }),
+    boardFaceMat,
     woodMat,
   ]
   const board = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 0.1), boardMats)
+  board.name = 'signBoard'   // looked up in applyDayNight
   board.position.y = 2.1
   board.castShadow = true
   signGroup.add(board)

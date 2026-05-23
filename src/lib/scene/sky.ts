@@ -149,6 +149,11 @@ export function applyDayNight(
   const start = Date.now()
   const campfireGroup = scene.getObjectByName('campfireGroup')
   const campfirePointLight = scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
+  // Sign board face material — emissive glow at night so text is readable
+  const signBoard = scene.getObjectByName('signBoard') as THREE.Mesh | undefined
+  const signFaceMat = Array.isArray(signBoard?.material)
+    ? (signBoard!.material[4] as THREE.MeshStandardMaterial)
+    : undefined
 
   const dayBg = new THREE.Color(0x87ceeb)
   const nightBg = new THREE.Color(0x060810)
@@ -200,6 +205,9 @@ export function applyDayNight(
       lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1a1006), ep)
       lights.hemi.intensity = 1.25 - ep * 0.5
     }
+
+    // Sign board glow — fades in at night so text stays readable
+    if (signFaceMat) signFaceMat.emissiveIntensity = isDay ? 1.4 * (1 - ep) : 1.4 * ep
 
     // Campfire: only relevant when switching modes
     if (!isDay) {
