@@ -15,7 +15,8 @@ import { spawnSparks, showCrackLabel, showWalkMarker } from '@/lib/effects'
 import { updateButterflies } from '@/lib/scene/butterflies'
 import { applyQuality } from '@/lib/scene/quality'
 import {
-  setAudioEnabled,
+  setMusicVolume,
+  setSfxVolume,
   startWalkSound,
   stopWalkSound,
   playMineHit,
@@ -72,7 +73,8 @@ export function GameCanvas() {
   const autoLockoutEndRef = useRef(0)
   const rollingFpsRef = useRef<number[]>([])
   const wasWalkingRef = useRef(false)
-  const [audioEnabled, setAudioEnabledState] = useState(true)
+  const [musicVolume, setMusicVolumeState] = useState(0.7)
+  const [sfxVolume, setSfxVolumeState] = useState(0.8)
 
   const sceneRefsRef = useThreeScene(canvasContainerRef, gameStarted)
   const { activeModal, openModal, closeModal } = useModalStore()
@@ -440,11 +442,15 @@ export function GameCanvas() {
     })
   }
 
-  const handleToggleAudio = useCallback(() => {
-    const next = !audioEnabled
-    setAudioEnabledState(next)
-    setAudioEnabled(next)
-  }, [audioEnabled])
+  const handleMusicVolumeChange = useCallback((v: number) => {
+    setMusicVolumeState(v)
+    setMusicVolume(v)
+  }, [])
+
+  const handleSfxVolumeChange = useCallback((v: number) => {
+    setSfxVolumeState(v)
+    setSfxVolume(v)
+  }, [])
 
   const handleCycleQuality = useCallback(() => {
     const { qualityMode } = getState()
@@ -482,7 +488,7 @@ export function GameCanvas() {
           We forge intelligent systems — from full-stack apps to AI-driven automation.<br />
           Explore the island. Uncover the work. Discover what's possible.
         </p>
-        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setAudioEnabled(true) }}>
+        <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.7); setSfxVolume(0.8) }}>
           ⚒ Explore My Work
         </button>
       </div>
@@ -505,8 +511,10 @@ export function GameCanvas() {
         qualityMode={qualityMode}
         effectiveQuality={effectiveQuality}
         onCycleQuality={handleCycleQuality}
-        audioEnabled={audioEnabled}
-        onToggleAudio={handleToggleAudio}
+        musicVolume={musicVolume}
+        sfxVolume={sfxVolume}
+        onMusicVolumeChange={handleMusicVolumeChange}
+        onSfxVolumeChange={handleSfxVolumeChange}
       />
       <Modal>
         {ModalContent && <ModalContent />}
