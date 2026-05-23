@@ -110,8 +110,11 @@ export function Hud({ isDay, onToggleDayNight, hintLabels, isMobile, fps, qualit
             <div
               className={`${styles.settingsToggle} ${audioEnabled ? styles.settingsToggleOn : ''}`}
               onClick={onToggleAudio}
+              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onToggleAudio() } }}
               role="switch"
               aria-checked={audioEnabled}
+              aria-label="Music"
+              tabIndex={0}
             >
               <div className={styles.settingsToggleDot} />
             </div>
