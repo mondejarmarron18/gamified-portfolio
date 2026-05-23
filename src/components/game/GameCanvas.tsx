@@ -465,7 +465,7 @@ export function GameCanvas() {
         <p className={styles.introSub}>Software Engineer &amp; AI Automation</p>
         <div className={styles.introDivider} />
         <p className={styles.introDesc}>
-          We forge intelligent systems — from full-stack apps to AI-driven automation.<br />
+          I forge intelligent systems — from full-stack apps to AI-driven automation.<br />
           Explore the island. Uncover the work. Discover what's possible.
         </p>
         <button className={styles.introBtn} onClick={() => { setGameStarted(true); setMusicVolume(0.3); setSfxVolume(0.7) }}>
