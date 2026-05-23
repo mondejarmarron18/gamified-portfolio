@@ -43,4 +43,5 @@ export type HitResult =
   | { type: 'sign' }
   | { type: 'chest' }
   | { type: 'scroll' }
+  | { type: 'rabbit'; rabbitIndex: number }
   | { type: 'ground'; point: THREE.Vector3 }

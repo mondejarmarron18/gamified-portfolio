@@ -1,6 +1,23 @@
 // src/lib/scene/rabbits.ts
 import * as THREE from 'three'
 
+// ── Heart sprite texture (lazily created once) ────────────────────────────────
+let _heartTex: THREE.Texture | null = null
+function getHeartTex(): THREE.Texture {
+  if (_heartTex) return _heartTex
+  const c = document.createElement('canvas')
+  c.width = 64; c.height = 64
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const ctx = c.getContext('2d')!
+  ctx.font = '48px serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('❤', 32, 36)
+  _heartTex = new THREE.CanvasTexture(c)
+  return _heartTex
+}
+
+// ── Rabbit mesh builder ───────────────────────────────────────────────────────
 function buildRabbit(): THREE.Group {
   const g = new THREE.Group()
   const furMat = new THREE.MeshStandardMaterial({ color: 0xd4c8b0, roughness: 0.95 })
@@ -56,53 +73,136 @@ function buildRabbit(): THREE.Group {
   return g
 }
 
+// ── Public: spawn all rabbits ─────────────────────────────────────────────────
 export function buildRabbits(scene: THREE.Scene): THREE.Group[] {
+  // Spread far from each other and from the main interactable objects
   const startPositions = [
-    { x: -10, z: -4 },
-    { x: 9, z: 7 },
-    { x: -2, z: -11 },
+    { x: -9, z: 8  },   // northwest — away from sign (−8,3)
+    { x: 10, z: -4 },   // east — away from chest (8,3) and rocks
+    { x:  4, z: 11 },   // south — open ground near the front edge
   ]
   return startPositions.map((pos, i) => {
     const r = buildRabbit()
     r.position.set(pos.x, 0, pos.z)
+    r.userData['rabbitIndex'] = i
     r.userData['speed'] = 0.6 + Math.random() * 0.4
     r.userData['targetX'] = pos.x
     r.userData['targetZ'] = pos.z
     r.userData['hopPhase'] = Math.random() * Math.PI * 2
     r.userData['state'] = 'wait'
     r.userData['stateTimer'] = 1 + Math.random() * 2
+    r.userData['petTimer'] = 0
+    r.userData['hearts'] = []
     r.traverse((obj) => { if (obj instanceof THREE.Mesh) obj.castShadow = true })
     scene.add(r)
-    void i  // suppress unused warning
     return r
   })
 }
 
+// ── Public: trigger pet interaction ──────────────────────────────────────────
+/** Called when the player clicks/taps a rabbit. Stops it and spawns hearts. */
+export function petRabbit(r: THREE.Group): void {
+  const ud = r.userData as Record<string, unknown>
+  // Already petting — allow re-trigger to restart the heart burst
+  // Clean up any existing hearts first
+  const existing = ud['hearts'] as THREE.Sprite[]
+  existing.forEach((h) => h.parent?.remove(h))
+  ud['hearts'] = []
+
+  ud['state'] = 'pet'
+  ud['petTimer'] = 2.8           // seconds of hearts before flee
+  r.position.y = 0              // snap to ground in case mid-hop
+  r.scale.y = 1
+
+  const scene = r.parent
+  if (!scene) return
+  const tex = getHeartTex()
+  const hearts = ud['hearts'] as THREE.Sprite[]
+
+  for (let i = 0; i < 6; i++) {
+    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 1 })
+    const sprite = new THREE.Sprite(mat)
+    sprite.scale.set(0.3, 0.3, 1)
+    sprite.position.set(
+      r.position.x + (Math.random() - 0.5) * 0.5,
+      0.7 + Math.random() * 0.35,
+      r.position.z + (Math.random() - 0.5) * 0.5,
+    )
+    sprite.userData['vy'] = 0.32 + Math.random() * 0.22   // units/sec upward drift
+    sprite.userData['age'] = 0
+    sprite.userData['maxAge'] = 1.4 + Math.random() * 1.0
+    sprite.userData['sway'] = (Math.random() - 0.5) * 0.6 // horizontal sway speed
+    scene.add(sprite)
+    hearts.push(sprite)
+  }
+}
+
+// ── Public: per-frame update ──────────────────────────────────────────────────
 export function updateRabbits(rabbitGroups: THREE.Group[], dt: number, t: number): void {
   rabbitGroups.forEach((r) => {
     const ud = r.userData as {
       speed: number; targetX: number; targetZ: number
       hopPhase: number; state: string; stateTimer: number
+      petTimer: number; hearts: THREE.Sprite[]
     }
+
+    // ── Heart particles (updated regardless of rabbit state) ────────────────
+    for (let i = ud.hearts.length - 1; i >= 0; i--) {
+      const h = ud.hearts[i]!
+      const age = (h.userData['age'] as number) + dt
+      const maxAge = h.userData['maxAge'] as number
+      h.userData['age'] = age
+      h.position.y += (h.userData['vy'] as number) * dt
+      h.position.x += (h.userData['sway'] as number) * dt * Math.sin(age * 3)
+      ;(h.material as THREE.SpriteMaterial).opacity = Math.max(0, 1 - age / maxAge)
+      if (age >= maxAge) {
+        h.parent?.remove(h)
+        ud.hearts.splice(i, 1)
+      }
+    }
+
+    // ── State machine ────────────────────────────────────────────────────────
+    if (ud.state === 'pet') {
+      // Stay still — gentle ear-wiggle via scale pulse
+      r.scale.y = 1 + Math.sin(t * 8) * 0.04
+      ud.petTimer -= dt
+      if (ud.petTimer <= 0) {
+        // Flee — pick a random direction away from center
+        const angle = Math.atan2(r.position.z, r.position.x) + Math.PI + (Math.random() - 0.5) * 1.2
+        const dist = 5 + Math.random() * 4
+        const tx = Math.max(-12, Math.min(12, r.position.x + Math.cos(angle) * dist))
+        const tz = Math.max(-12, Math.min(12, r.position.z + Math.sin(angle) * dist))
+        ud.targetX = tx
+        ud.targetZ = tz
+        ud.state = 'walk'
+        ud.stateTimer = 3 + Math.random() * 2
+      }
+      return
+    }
+
     ud.stateTimer -= dt
 
     if (ud.state === 'wait') {
       r.scale.y = 1 + Math.sin(t * 2 + ud.hopPhase) * 0.015
       if (ud.stateTimer <= 0) {
+        // Pick a wandering target relative to current position, clamped to island
         const angle = Math.random() * Math.PI * 2
-        const radius = 2 + Math.random() * 9
-        ud.targetX = Math.cos(angle) * radius
-        ud.targetZ = Math.sin(angle) * radius
+        const radius = 2 + Math.random() * 7
+        ud.targetX = Math.max(-12, Math.min(12, r.position.x + Math.cos(angle) * radius))
+        ud.targetZ = Math.max(-12, Math.min(12, r.position.z + Math.sin(angle) * radius))
         ud.state = 'walk'
         ud.stateTimer = 2 + Math.random() * 3
       }
     } else {
+      // Walk state
       const dx = ud.targetX - r.position.x
       const dz = ud.targetZ - r.position.z
       const dist = Math.hypot(dx, dz)
       if (dist < 0.15 || ud.stateTimer <= 0) {
         ud.state = 'wait'
         ud.stateTimer = 1 + Math.random() * 2.5
+        r.position.y = 0
+        r.scale.y = 1
       } else {
         const step = Math.min(ud.speed * dt, dist)
         r.position.x += (dx / dist) * step

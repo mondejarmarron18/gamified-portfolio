@@ -9,6 +9,7 @@ export interface RaycastTargets {
   scrollGroup: THREE.Group
   signGroup: THREE.Group
   chestGroup: THREE.Group
+  rabbitGroups: THREE.Group[]
   groundMesh: THREE.Mesh
   bounds: number
 }
@@ -72,6 +73,14 @@ export function castRay(
   // Chest
   const chestHits = _raycaster.intersectObjects(targets.chestGroup.children, true)
   if (chestHits.length > 0) return { type: 'chest' }
+
+  // Rabbits (checked before ground — small targets sitting on ground)
+  for (const g of targets.rabbitGroups) {
+    const hits = _raycaster.intersectObjects(g.children, false)
+    if (hits.length > 0) {
+      return { type: 'rabbit', rabbitIndex: g.userData['rabbitIndex'] as number }
+    }
+  }
 
   // Ground
   const groundHits = _raycaster.intersectObject(targets.groundMesh)

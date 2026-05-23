@@ -13,6 +13,7 @@ import { animatePlayerWalk, resetPlayerPose } from '@/lib/scene/player'
 import { shakeMesh, explodeRock } from '@/lib/scene/rocks'
 import { spawnSparks, showCrackLabel, showWalkMarker } from '@/lib/effects'
 import { updateButterflies } from '@/lib/scene/butterflies'
+import { petRabbit } from '@/lib/scene/rabbits'
 import { applyQuality } from '@/lib/scene/quality'
 import {
   setMusicVolume,
@@ -111,6 +112,8 @@ export function GameCanvas() {
       scrollGroup: refs.objects.scrollGroup,
       signGroup: refs.objects.signGroup,
       chestGroup: refs.objects.chestGroup,
+      // Only include visible rabbits (hidden in performance mode)
+      rabbitGroups: refs.rabbitGroups.filter((r) => r.visible),
       groundMesh: refs.groundMesh,
       bounds: BOUNDS,
     }
@@ -126,6 +129,11 @@ export function GameCanvas() {
     const { setTarget, setWalking } = useGameStore.getState()
 
     if (hit.type === 'ground') return
+    if (hit.type === 'rabbit') {
+      const rabbit = refs.rabbitGroups[hit.rabbitIndex]
+      if (rabbit) petRabbit(rabbit)
+      return
+    }
     if (hit.type === 'crackedGold') { playModalOpen(); openModal('resume'); return }
     if (hit.type === 'sign') {
       const dist = Math.hypot(gs.player.x - gs.signPos.x, gs.player.z - gs.signPos.z)
@@ -208,8 +216,9 @@ export function GameCanvas() {
     const hit = castRay(clientX, clientY, refs.camera, refs.renderer, targets)
     if (!hit) { document.body.style.cursor = ''; return }
     document.body.style.cursor =
-      hit.type === 'rock' ? 'crosshair' :
-      hit.type === 'ground' ? 'move' : 'pointer'
+      hit.type === 'rock'    ? 'crosshair' :
+      hit.type === 'ground'  ? 'move' :
+      hit.type === 'rabbit'  ? 'grab' : 'pointer'
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
