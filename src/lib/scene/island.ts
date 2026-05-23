@@ -31,7 +31,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
   geo.computeVertexNormals()
   const rockBase = new THREE.Mesh(
     geo,
-    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x5a5448, roughness: 0.95, metalness: 0.06 }),
+    new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x8a9aaa, roughness: 0.40, metalness: 0.70 }),
   )
   rockBase.position.y = -1.5
   rockBase.receiveShadow = true
@@ -107,7 +107,7 @@ export function buildIsland(scene: THREE.Scene, tex: SceneTextures): void {
     cg.computeVertexNormals()
     const cm = new THREE.Mesh(
       cg,
-      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x4a4038, roughness: 0.95, metalness: 0.08 }),
+      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x7a8a9a, roughness: 0.42, metalness: 0.68 }),
     )
     cm.position.set(
       Math.cos(a) * r,
@@ -252,22 +252,22 @@ export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
     const stemMat = new THREE.MeshStandardMaterial({ color: 0x3a7010, roughness: 0.95 })
     const centerMat = new THREE.MeshStandardMaterial({ color: 0xffee44, roughness: 0.8 })
 
-    const stemH = 0.12 + Math.random() * 0.1
-    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.01, stemH, 5), stemMat)
+    const stemH = 0.07 + Math.random() * 0.05
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.006, stemH, 5), stemMat)
     stem.position.y = stemH * 0.5
     g.add(stem)
 
     for (let p = 0; p < 5; p++) {
       const angle = (p / 5) * Math.PI * 2
-      const petal = new THREE.Mesh(new THREE.SphereGeometry(0.038, 5, 3), petalMat)
+      const petal = new THREE.Mesh(new THREE.SphereGeometry(0.018, 5, 3), petalMat)
       petal.scale.set(1, 0.35, 1.6)
-      petal.position.set(Math.cos(angle) * 0.042, stemH + 0.005, Math.sin(angle) * 0.042)
+      petal.position.set(Math.cos(angle) * 0.020, stemH + 0.003, Math.sin(angle) * 0.020)
       petal.rotation.y = angle
       g.add(petal)
     }
 
-    const center = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.012, 7), centerMat)
-    center.position.y = stemH + 0.006
+    const center = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.007, 7), centerMat)
+    center.position.y = stemH + 0.004
     g.add(center)
 
     g.position.set(fx, 0, fz)
@@ -299,9 +299,9 @@ export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {
       geo,
       new THREE.MeshStandardMaterial({
         map: tex.rock,
-        color: new THREE.Color().setHSL(0.07 + Math.random() * 0.05, 0.2, 0.28 + Math.random() * 0.08),
-        roughness: 0.94,
-        metalness: 0.08,
+        color: new THREE.Color().setHSL(0.58 + Math.random() * 0.06, 0.12, 0.52 + Math.random() * 0.14),
+        roughness: 0.38,
+        metalness: 0.72,
       }),
     )
     m.position.set(
@@ -330,7 +330,7 @@ export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {
     geo.computeVertexNormals()
     const m = new THREE.Mesh(
       geo,
-      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x3a3028, roughness: 0.97 }),
+      new THREE.MeshStandardMaterial({ map: tex.rock, color: 0x6a7a8a, roughness: 0.36, metalness: 0.75 }),
     )
     const a = (i / 10) * Math.PI * 2
     const r = 13 + Math.random() * 2.5
