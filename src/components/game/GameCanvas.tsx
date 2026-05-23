@@ -389,7 +389,7 @@ export function GameCanvas() {
       // Campfire flicker — only when night is fully active (not during transition)
       const campfireLight = refs.scene.getObjectByName('campfireLight') as THREE.PointLight | undefined
       if (campfireLight && campfireActiveRef.current)
-        campfireLight.intensity = 8.5 + Math.sin(elapsed * 7.3) * 1.2 + Math.sin(elapsed * 13.7) * 0.6
+        campfireLight.intensity = 14 + Math.sin(elapsed * 7.3) * 2.0 + Math.sin(elapsed * 13.7) * 1.0
 
       // Skip butterfly animation when hidden (low quality)
       const { effectiveQuality } = gs
