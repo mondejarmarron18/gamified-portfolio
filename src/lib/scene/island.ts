@@ -254,16 +254,56 @@ export function buildTrees(scene: THREE.Scene, tex: SceneTextures): THREE.Group[
   return groups
 }
 
-// buildFlowers — now renders scattered fallen leaves on the terrain
 export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
   const groups: THREE.Group[] = []
-  // Greens, yellows, light brown — fallen leaf palette
+  const flowerColors = [0xff1493, 0xff69b4, 0xff1493, 0xff69b4, 0xff1493, 0xee1177]
+  for (let i = 0; i < 55; i++) {
+    let fx: number, fz: number, fr: number
+    do {
+      fx = (Math.random() - 0.5) * 28
+      fz = (Math.random() - 0.5) * 28
+      fr = Math.sqrt(fx * fx + fz * fz)
+    } while (fr > 13.5 || fr < 1.5)
+
+    const g = new THREE.Group()
+    const col = flowerColors[Math.floor(Math.random() * flowerColors.length)]!
+    const petalMat  = new THREE.MeshStandardMaterial({ color: col, roughness: 0.9 })
+    const stemMat   = new THREE.MeshStandardMaterial({ color: 0x3a7010, roughness: 0.95 })
+    const centerMat = new THREE.MeshStandardMaterial({ color: 0xffee44, roughness: 0.8 })
+
+    const stemH = 0.07 + Math.random() * 0.05
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.006, stemH, 5), stemMat)
+    stem.position.y = stemH * 0.5
+    g.add(stem)
+
+    for (let p = 0; p < 5; p++) {
+      const angle = (p / 5) * Math.PI * 2
+      const petal = new THREE.Mesh(new THREE.SphereGeometry(0.018, 5, 3), petalMat)
+      petal.scale.set(1, 0.35, 1.6)
+      petal.position.set(Math.cos(angle) * 0.020, stemH + 0.003, Math.sin(angle) * 0.020)
+      petal.rotation.y = angle
+      g.add(petal)
+    }
+
+    const center = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.007, 7), centerMat)
+    center.position.y = stemH + 0.004
+    g.add(center)
+
+    g.position.set(fx, 0, fz)
+    g.rotation.y = Math.random() * Math.PI * 2
+    scene.add(g)
+    groups.push(g)
+  }
+  return groups
+}
+
+// Scattered fallen leaves across the terrain — tapered oval planes lying flat
+export function buildLeaves(scene: THREE.Scene): void {
   const leafColors = [
     0x3a7a18, 0x4a8a22, 0x56942a, 0x2e6612,
     0xb8a818, 0xc89820, 0xd4aa28,
     0x8a7030, 0x9a7828,
   ]
-
   for (let i = 0; i < 220; i++) {
     let lx: number, lz: number, lr: number
     do {
@@ -273,49 +313,27 @@ export function buildFlowers(scene: THREE.Scene): THREE.Group[] {
     } while (lr > 13.5 || lr < 1.0)
 
     const g = new THREE.Group()
-
-    // 1–3 leaves per group, loosely scattered in a small radius
     const count = 1 + Math.floor(Math.random() * 3)
     for (let k = 0; k < count; k++) {
       const col = leafColors[Math.floor(Math.random() * leafColors.length)]!
-      // Oval leaf shape: narrow plane scaled along one axis
       const w = 0.07 + Math.random() * 0.06
       const h = 0.12 + Math.random() * 0.08
       const geo = new THREE.PlaneGeometry(w, h, 1, 2)
-      // Pinch tip slightly for a leaf silhouette
       const pos = geo.attributes['position'] as THREE.BufferAttribute
       for (let v = 0; v < pos.count; v++) {
         const vy = pos.getY(v)
-        if (vy > 0) {
-          // taper the top half inward
-          pos.setX(v, pos.getX(v) * (1 - vy / h * 0.55))
-        }
+        if (vy > 0) pos.setX(v, pos.getX(v) * (1 - (vy / h) * 0.55))
       }
       geo.computeVertexNormals()
-
-      const mat = new THREE.MeshStandardMaterial({
-        color: col,
-        roughness: 0.88,
-        side: THREE.DoubleSide,
-      })
-      const leaf = new THREE.Mesh(geo, mat)
-
-      // Lie mostly flat, slight random tilt so edges lift naturally
+      const leaf = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.88, side: THREE.DoubleSide }))
       leaf.rotation.x = -Math.PI / 2 + (Math.random() - 0.5) * 0.35
       leaf.rotation.z = Math.random() * Math.PI * 2
-      leaf.position.set(
-        (Math.random() - 0.5) * 0.22,
-        0.012,
-        (Math.random() - 0.5) * 0.22,
-      )
+      leaf.position.set((Math.random() - 0.5) * 0.22, 0.012, (Math.random() - 0.5) * 0.22)
       g.add(leaf)
     }
-
     g.position.set(lx, 0, lz)
     scene.add(g)
-    groups.push(g)
   }
-  return groups
 }
 
 export function buildDecorRocks(scene: THREE.Scene, tex: SceneTextures): void {

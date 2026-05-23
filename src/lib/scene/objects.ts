@@ -89,9 +89,10 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
   signCanvas.height = 128
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sCtx = signCanvas.getContext('2d')!
-  sCtx.fillStyle = '#6a3c18'
+  // Lighter parchment background so dark text is readable day AND night (with emissive glow)
+  sCtx.fillStyle = '#c8842e'
   sCtx.fillRect(0, 0, 256, 128)
-  sCtx.strokeStyle = 'rgba(40,20,8,.3)'
+  sCtx.strokeStyle = 'rgba(40,20,8,.25)'
   sCtx.lineWidth = 2
   for (let i = 0; i < 6; i++) {
     sCtx.beginPath()
@@ -99,13 +100,14 @@ export function buildSignBoard(scene: THREE.Scene, tex: SceneTextures, signPos: 
     sCtx.lineTo(256, i * 22 + 8)
     sCtx.stroke()
   }
-  sCtx.fillStyle = '#f8d87a'
+  // Dark text — visible on the warm/bright emissive surface at night
+  sCtx.fillStyle = '#1a0800'
   sCtx.textAlign = 'center'
   sCtx.textBaseline = 'middle'
   sCtx.font = 'bold 30px serif'
   sCtx.fillText('QUEST LOG', 128, 52)
   sCtx.font = '18px serif'
-  sCtx.fillStyle = '#e0b84a'
+  sCtx.fillStyle = '#2a1000'
   sCtx.fillText('[ Click to Read ]', 128, 88)
 
   const signTex = new THREE.CanvasTexture(signCanvas)

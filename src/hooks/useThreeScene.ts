@@ -8,6 +8,7 @@ import {
   buildGrass,
   buildTrees,
   buildFlowers,
+  buildLeaves,
   buildDecorRocks,
   buildGround,
 } from '@/lib/scene/island'
@@ -95,6 +96,7 @@ export function useThreeScene(
     const grassMeshes = buildGrass(scene)
     const treeGroups = buildTrees(scene, tex)
     const flowerGroups = buildFlowers(scene)
+    buildLeaves(scene)
     buildDecorRocks(scene, tex)
     const groundMesh = buildGround(scene)
 
