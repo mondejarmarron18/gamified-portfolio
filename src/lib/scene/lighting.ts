@@ -6,6 +6,7 @@ export interface LightHandles {
   sun: THREE.DirectionalLight
   hemi: THREE.HemisphereLight
   forge: THREE.PointLight
+  moonPoint: THREE.PointLight   // soft blue ground fill at night
 }
 
 export function buildLighting(scene: THREE.Scene): LightHandles {
@@ -22,6 +23,12 @@ export function buildLighting(scene: THREE.Scene): LightHandles {
   moon.shadow.camera.bottom = -30
   moon.shadow.bias = -0.001
   scene.add(moon)
+
+  // Soft moonlight point — activates at night via applyDayNight
+  const moonPoint = new THREE.PointLight(0x99aadd, 0, 60)
+  moonPoint.name = 'moonPoint'
+  moonPoint.position.set(-10, 28, 8)
+  scene.add(moonPoint)
 
   const sun = new THREE.DirectionalLight(0xffeebb, 0)
   sun.name = 'sunLight'
@@ -60,5 +67,5 @@ export function buildLighting(scene: THREE.Scene): LightHandles {
   fill.position.set(0, 5, 15)
   scene.add(fill)
 
-  return { moon, sun, hemi, forge }
+  return { moon, sun, hemi, forge, moonPoint }
 }

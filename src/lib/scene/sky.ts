@@ -5,6 +5,7 @@ import type { LightHandles } from './lighting'
 export interface SkyHandles {
   stars: THREE.Points
   moonDisc: THREE.Mesh
+  moonGlow: THREE.Mesh   // soft halo ring around moon
   sunDisc: THREE.Mesh
   sunGlow: THREE.Mesh
   clouds: THREE.Group[]
@@ -51,6 +52,19 @@ export function buildSky(scene: THREE.Scene): SkyHandles {
   moonDisc.position.set(-45, 55, -80)
   scene.add(moonDisc)
 
+  // Moon glow halo — larger translucent ring behind the disc
+  const moonGlow = new THREE.Mesh(
+    new THREE.CircleGeometry(9, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0xaabbee,
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+    }),
+  )
+  moonGlow.position.set(-45, 55, -80.5) // slightly behind moonDisc
+  scene.add(moonGlow)
+
   // Sun disc
   const sunDisc = new THREE.Mesh(
     new THREE.CircleGeometry(5, 32),
@@ -79,7 +93,7 @@ export function buildSky(scene: THREE.Scene): SkyHandles {
 
   const clouds = buildClouds(scene)
 
-  return { stars, moonDisc, sunDisc, sunGlow, clouds }
+  return { stars, moonDisc, moonGlow, sunDisc, sunGlow, clouds }
 }
 
 function buildClouds(scene: THREE.Scene): THREE.Group[] {
@@ -151,6 +165,8 @@ export function applyDayNight(
         scene.fog.color.copy(nightFog.clone().lerp(dayFog, ep))
       ;(sky.stars.material as THREE.PointsMaterial).opacity = 0.9 * (1 - ep)
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = 0.55 * (1 - ep)
+      ;(sky.moonGlow.material as THREE.MeshBasicMaterial).opacity = 0.18 * (1 - ep)
+      lights.moonPoint.intensity = 2.5 * (1 - ep)
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.8
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = ep * 0.3
       sky.clouds.forEach((cg) =>
@@ -158,7 +174,7 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = ep * 0.88,
         ),
       )
-      lights.moon.intensity = 1.4 * (1 - ep)
+      lights.moon.intensity = 2.4 * (1 - ep)
       lights.sun.intensity = ep * 2.2
       lights.hemi.color.set(0x223366).lerp(new THREE.Color(0x88bbff), ep)
       lights.hemi.groundColor.set(0x1a1006).lerp(new THREE.Color(0x6a8040), ep)
@@ -169,6 +185,8 @@ export function applyDayNight(
         scene.fog.color.copy(dayFog.clone().lerp(nightFog, ep))
       ;(sky.stars.material as THREE.PointsMaterial).opacity = ep * 0.9
       ;(sky.moonDisc.material as THREE.MeshBasicMaterial).opacity = ep * 0.55
+      ;(sky.moonGlow.material as THREE.MeshBasicMaterial).opacity = ep * 0.18
+      lights.moonPoint.intensity = ep * 2.5
       ;(sky.sunDisc.material as THREE.MeshBasicMaterial).opacity = 0.8 * (1 - ep)
       ;(sky.sunGlow.material as THREE.MeshBasicMaterial).opacity = 0.3 * (1 - ep)
       sky.clouds.forEach((cg) =>
@@ -176,7 +194,7 @@ export function applyDayNight(
           (b) => ((b as THREE.Mesh).material as THREE.MeshStandardMaterial).opacity = 0.88 * (1 - ep),
         ),
       )
-      lights.moon.intensity = ep * 1.4
+      lights.moon.intensity = ep * 2.4
       lights.sun.intensity = 0.85 * (1 - ep) * 0.3
       lights.hemi.color.set(0x88bbff).lerp(new THREE.Color(0x223366), ep)
       lights.hemi.groundColor.set(0x6a8040).lerp(new THREE.Color(0x1a1006), ep)
